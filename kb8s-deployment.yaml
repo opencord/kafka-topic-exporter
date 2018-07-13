@@ -1,0 +1,29 @@
+# kubectl create -f kb8s-deployment.yaml
+# kubectl delete pod prometheus-go-exporter
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: prometheus-go-exporter
+  labels:
+    app: prometheus-go-exporter
+spec:
+  containers:
+    - name: prometheus-go-exporter
+      image: prometheus-go-exporter:latest
+      imagePullPolicy: IfNotPresent
+      args: ["-broker=voltha-kafka.default.svc.cluster.local:9092", "-topic=voltha.kpis"]
+  restartPolicy: Never
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-go-exporter
+spec:
+  selector:
+    app: prometheus-go-exporter
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30080
