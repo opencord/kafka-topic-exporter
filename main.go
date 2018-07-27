@@ -47,10 +47,10 @@ var (
 
 	// config
 	broker  = flag.String("broker", "voltha-kafka.default.svc.cluster.local:9092", "The Kafka broker")
-	brokers = []string{*broker}
 	topic   = flag.String("topic", "voltha.kpis", "The Kafka topic")
 )
 
+var brokers []string
 var messageCountStart int
 
 func prefixToLabels(prefix string) (string, string, string) {
@@ -87,7 +87,7 @@ func interfaceToFloat(unk interface{}) float64 {
 	}
 }
 
-func kafkaInit() {
+func kafkaInit(brokers []string) {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 
@@ -181,7 +181,9 @@ func init() {
 
 	// read config from cli flags
 	flag.Parse()
-	fmt.Println("Connecting to broker: ", *broker)
+	brokers = make([]string, 0)
+	brokers = []string{*broker}
+	fmt.Println("Connecting to broker: ", brokers)
 	fmt.Println("Listening to topic: ", *topic)
 
 	// register metrics within Prometheus
@@ -192,6 +194,6 @@ func init() {
 }
 
 func main() {
-	go kafkaInit()
+	go kafkaInit(brokers)
 	runServer()
 }
