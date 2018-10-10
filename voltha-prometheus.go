@@ -17,56 +17,56 @@ package main
 import "github.com/prometheus/client_golang/prometheus"
 
 var (
-	txBytesTotal = prometheus.NewGaugeVec(
+	volthaTxBytesTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "tx_bytes_total",
+			Name: "voltha_tx_bytes_total",
 			Help: "Number of total bytes transmitted",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
-	rxBytesTotal = prometheus.NewGaugeVec(
+	volthaRxBytesTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "rx_bytes_total",
+			Name: "voltha_rx_bytes_total",
 			Help: "Number of total bytes received",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
-	txPacketsTotal = prometheus.NewGaugeVec(
+	volthaTxPacketsTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "tx_packets_total",
+			Name: "voltha_tx_packets_total",
 			Help: "Number of total packets transmitted",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
-	rxPacketsTotal = prometheus.NewGaugeVec(
+	volthaRxPacketsTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "rx_packets_total",
+			Name: "voltha_rx_packets_total",
 			Help: "Number of total packets received",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
 
-	txErrorPacketsTotal = prometheus.NewGaugeVec(
+	volthaTxErrorPacketsTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "tx_error_packets_total",
+			Name: "voltha_tx_error_packets_total",
 			Help: "Number of total transmitted packets error",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
 
-	rxErrorPacketsTotal = prometheus.NewGaugeVec(
+	volthaRxErrorPacketsTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "rx_error_packets_total",
+			Name: "voltha_rx_error_packets_total",
 			Help: "Number of total received packets error",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
 )
 
-func export(kpi KPI) {
+func exportVolthaKPI(kpi VolthaKPI) {
 
 	for _, data := range kpi.SliceDatas {
-		txBytesTotal.WithLabelValues(
+		volthaTxBytesTotal.WithLabelValues(
 			data.Metadata.LogicalDeviceID,
 			data.Metadata.SerialNumber,
 			data.Metadata.DeviceID,
@@ -76,7 +76,7 @@ func export(kpi KPI) {
 			data.Metadata.Title,
 		).Set(data.Metrics.TxBytes)
 
-		rxBytesTotal.WithLabelValues(
+		volthaRxBytesTotal.WithLabelValues(
 			data.Metadata.LogicalDeviceID,
 			data.Metadata.SerialNumber,
 			data.Metadata.DeviceID,
@@ -86,7 +86,7 @@ func export(kpi KPI) {
 			data.Metadata.Title,
 		).Set(data.Metrics.RxBytes)
 
-		txPacketsTotal.WithLabelValues(
+		volthaTxPacketsTotal.WithLabelValues(
 			data.Metadata.LogicalDeviceID,
 			data.Metadata.SerialNumber,
 			data.Metadata.DeviceID,
@@ -96,7 +96,7 @@ func export(kpi KPI) {
 			data.Metadata.Title,
 		).Set(data.Metrics.TxPackets)
 
-		rxPacketsTotal.WithLabelValues(
+		volthaRxPacketsTotal.WithLabelValues(
 			data.Metadata.LogicalDeviceID,
 			data.Metadata.SerialNumber,
 			data.Metadata.DeviceID,
@@ -106,7 +106,7 @@ func export(kpi KPI) {
 			data.Metadata.Title,
 		).Set(data.Metrics.RxPackets)
 
-		txErrorPacketsTotal.WithLabelValues(
+		volthaTxErrorPacketsTotal.WithLabelValues(
 			data.Metadata.LogicalDeviceID,
 			data.Metadata.SerialNumber,
 			data.Metadata.DeviceID,
@@ -116,7 +116,7 @@ func export(kpi KPI) {
 			data.Metadata.Title,
 		).Set(data.Metrics.TxErrorPackets)
 
-		rxErrorPacketsTotal.WithLabelValues(
+		volthaRxErrorPacketsTotal.WithLabelValues(
 			data.Metadata.LogicalDeviceID,
 			data.Metadata.SerialNumber,
 			data.Metadata.DeviceID,
