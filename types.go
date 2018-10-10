@@ -59,8 +59,23 @@ type SliceData struct {
 	Metadata *Metadata `json:"metadata"`
 }
 
-type KPI struct {
+type VolthaKPI struct {
 	Type       string       `json:"type"`
 	Timestamp  float64      `json:"ts"`
 	SliceDatas []*SliceData `json:"slice_data"`
+}
+
+type OnosPort struct {
+	PortID        string  `json:"portId"`
+	RxPackets     float64 `json:"pktRx"`
+	TxPackets     float64 `json:"pktTx"`
+	RxBytes       float64 `json:"bytesRx"`
+	TxBytes       float64 `json:"bytesTx"`
+	RxPacketsDrop float64 `json:"pktRxDrp"`
+	TxPacketsDrop float64 `json:"pktTxDrp"`
+}
+
+type OnosKPI struct {
+	DeviceID string      `json:"deviceId"`
+	Ports    []*OnosPort `json:"ports"`
 }
