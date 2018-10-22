@@ -28,12 +28,21 @@ type Metrics struct {
 	RxErrorPackets     float64 `json:"rx_error_packets"`
 	RxBcastPackets     float64 `json:"rx_bcast_packets"`
 	RxMulticastPackets float64 `json:"rx_mcast_packets"`
+
+	// ONU Ethernet_Bridge_Port_history
+	Packets            float64 `json:"packets"`
+	Octets             float64 `json:"octets"`
 }
 
 type Context struct {
 	InterfaceID string `json:"intf_id"`
 	PonID       string `json:"pon_id"`
 	PortNumber  string `json:"port_no"`
+
+	// ONU Performance Metrics
+	ParentClassId string `json:"parent_class_id"`
+	ParentEntityId string `json:"parent_entity_id"`
+	Upstream    string `json:"upstream"`
 }
 
 type Metadata struct {

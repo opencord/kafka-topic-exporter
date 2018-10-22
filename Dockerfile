@@ -15,15 +15,15 @@
 # docker build -t opencord/kafka-topic-exporter:latest .
 # docker build -t 10.90.0.101:30500/opencord/kafka-topic-exporter:latest .
 
-FROM golang:latest as builder
-RUN mkdir /app 
-ADD . /app/ 
-WORKDIR /app 
+FROM golang:1.10-stretch as builder
+RUN mkdir /app
+ADD . /app/
+WORKDIR /app
 RUN go get github.com/prometheus/client_golang/prometheus
 RUN go get github.com/Shopify/sarama
-RUN CGO_ENABLED=0 GOOS=linux go build -o main . 
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
-FROM alpine:latest  
+FROM alpine:3.8
 WORKDIR /app/
 COPY --from=builder /app/main .
 ENTRYPOINT ["./main"]
