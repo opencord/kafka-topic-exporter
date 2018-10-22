@@ -61,77 +61,120 @@ var (
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
+
+	// ONU
+        packetsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "packets_total",
+			Help: "Number of total packets",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "title"},
+	)
+	bytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "bytes_total",
+			Help: "Number of total bytes",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "title"},
+	)
 )
 
 func export(kpi KPI) {
 
 	for _, data := range kpi.SliceDatas {
-		txBytesTotal.WithLabelValues(
-			data.Metadata.LogicalDeviceID,
-			data.Metadata.SerialNumber,
-			data.Metadata.DeviceID,
-			data.Metadata.Context.InterfaceID,
-			data.Metadata.Context.PonID,
-			data.Metadata.Context.PortNumber,
-			data.Metadata.Title,
-		).Set(data.Metrics.TxBytes)
+	        switch title := data.Metadata.Title; title {
+                        case "Ethernet", "PON":
+                                txBytesTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Context.InterfaceID,
+                                        data.Metadata.Context.PonID,
+                                        data.Metadata.Context.PortNumber,
+                                        data.Metadata.Title,
+                                ).Set(data.Metrics.TxBytes)
 
-		rxBytesTotal.WithLabelValues(
-			data.Metadata.LogicalDeviceID,
-			data.Metadata.SerialNumber,
-			data.Metadata.DeviceID,
-			data.Metadata.Context.InterfaceID,
-			data.Metadata.Context.PonID,
-			data.Metadata.Context.PortNumber,
-			data.Metadata.Title,
-		).Set(data.Metrics.RxBytes)
+                                rxBytesTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Context.InterfaceID,
+                                        data.Metadata.Context.PonID,
+                                        data.Metadata.Context.PortNumber,
+                                        data.Metadata.Title,
+                                ).Set(data.Metrics.RxBytes)
 
-		txPacketsTotal.WithLabelValues(
-			data.Metadata.LogicalDeviceID,
-			data.Metadata.SerialNumber,
-			data.Metadata.DeviceID,
-			data.Metadata.Context.InterfaceID,
-			data.Metadata.Context.PonID,
-			data.Metadata.Context.PortNumber,
-			data.Metadata.Title,
-		).Set(data.Metrics.TxPackets)
+                                txPacketsTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Context.InterfaceID,
+                                        data.Metadata.Context.PonID,
+                                        data.Metadata.Context.PortNumber,
+                                        data.Metadata.Title,
+                                ).Set(data.Metrics.TxPackets)
 
-		rxPacketsTotal.WithLabelValues(
-			data.Metadata.LogicalDeviceID,
-			data.Metadata.SerialNumber,
-			data.Metadata.DeviceID,
-			data.Metadata.Context.InterfaceID,
-			data.Metadata.Context.PonID,
-			data.Metadata.Context.PortNumber,
-			data.Metadata.Title,
-		).Set(data.Metrics.RxPackets)
+                                rxPacketsTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Context.InterfaceID,
+                                        data.Metadata.Context.PonID,
+                                        data.Metadata.Context.PortNumber,
+                                        data.Metadata.Title,
+                                ).Set(data.Metrics.RxPackets)
 
-		txErrorPacketsTotal.WithLabelValues(
-			data.Metadata.LogicalDeviceID,
-			data.Metadata.SerialNumber,
-			data.Metadata.DeviceID,
-			data.Metadata.Context.InterfaceID,
-			data.Metadata.Context.PonID,
-			data.Metadata.Context.PortNumber,
-			data.Metadata.Title,
-		).Set(data.Metrics.TxErrorPackets)
+                                txErrorPacketsTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Context.InterfaceID,
+                                        data.Metadata.Context.PonID,
+                                        data.Metadata.Context.PortNumber,
+                                        data.Metadata.Title,
+                                ).Set(data.Metrics.TxErrorPackets)
 
-		rxErrorPacketsTotal.WithLabelValues(
-			data.Metadata.LogicalDeviceID,
-			data.Metadata.SerialNumber,
-			data.Metadata.DeviceID,
-			data.Metadata.Context.InterfaceID,
-			data.Metadata.Context.PonID,
-			data.Metadata.Context.PortNumber,
-			data.Metadata.Title,
-		).Set(data.Metrics.RxErrorPackets)
+                                rxErrorPacketsTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Context.InterfaceID,
+                                        data.Metadata.Context.PonID,
+                                        data.Metadata.Context.PortNumber,
+                                        data.Metadata.Title,
+                                ).Set(data.Metrics.RxErrorPackets)
 
-		// TODO add metrics for:
-		// TxBcastPackets
-		// TxUnicastPackets
-		// TxMulticastPackets
-		// RxBcastPackets
-		// RxMulticastPackets
+                                // TODO add metrics for:
+                                // TxBcastPackets
+                                // TxUnicastPackets
+                                // TxMulticastPackets
+                                // RxBcastPackets
+                                // RxMulticastPackets
 
+                        case "Ethernet_Bridge_Port_History":
+                                // ONU. Extended Ethernet statistics.
+                                packetsTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Title,
+                                ).Add(data.Metrics.Packets)
+
+                                bytesTotal.WithLabelValues(
+                                        data.Metadata.LogicalDeviceID,
+                                        data.Metadata.SerialNumber,
+                                        data.Metadata.DeviceID,
+                                        data.Metadata.Title,
+                                ).Add(data.Metrics.Octets)
+
+                        case "Ethernet_UNI_History":
+                                // ONU. Do nothing.
+
+                        case "FEC_History":
+                                // ONU. Do Nothing.
+
+                        case "voltha.internal":
+                                // Voltha Internal. Do nothing.
+                }
 	}
 }

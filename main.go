@@ -101,6 +101,8 @@ func init() {
 	prometheus.MustRegister(rxBytesTotal)
 	prometheus.MustRegister(txPacketsTotal)
 	prometheus.MustRegister(rxPacketsTotal)
+	prometheus.MustRegister(packetsTotal)
+	prometheus.MustRegister(bytesTotal)
 }
 
 func main() {
