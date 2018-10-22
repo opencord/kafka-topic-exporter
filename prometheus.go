@@ -61,6 +61,22 @@ var (
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
+
+	// ONU
+        packetsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "packets_total",
+			Help: "Number of total packets",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "title"},
+	)
+	bytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "bytes_total",
+			Help: "Number of total bytes",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "title"},
+	)
 )
 
 func export(kpi KPI) {
@@ -125,6 +141,20 @@ func export(kpi KPI) {
 			data.Metadata.Context.PortNumber,
 			data.Metadata.Title,
 		).Set(data.Metrics.RxErrorPackets)
+
+		packetsTotal.WithLabelValues(
+			data.Metadata.LogicalDeviceID,
+			data.Metadata.SerialNumber,
+			data.Metadata.DeviceID,
+			data.Metadata.Title,
+		).Set(data.Metrics.Packets)
+
+		bytesTotal.WithLabelValues(
+			data.Metadata.LogicalDeviceID,
+			data.Metadata.SerialNumber,
+			data.Metadata.DeviceID,
+			data.Metadata.Title,
+		).Set(data.Metrics.Octets)
 
 		// TODO add metrics for:
 		// TxBcastPackets
