@@ -79,3 +79,18 @@ type OnosKPI struct {
 	DeviceID string      `json:"deviceId"`
 	Ports    []*OnosPort `json:"ports"`
 }
+
+type AuthStatKPI struct {
+	AuthState           string  `json:"authenticationStatisticsState"`
+	AcceptPkt           float64 `json:"acceptPacketCounter"`
+	RejectPkt           float64 `json:"rejectPacketCounter"`
+	ChallengePkt        float64 `json:"challengePacketCounter"`
+	AccessPkt           float64 `json:"accessPacketCounter"`
+	InvalidValid        float64 `json:"invalidValidatorCounter"`
+	UnknownType         float64 `json:"unknownTypeCounter"`
+	PendingRqst         float64 `json:"pendingRequestCounter"`
+	DroppedPkt          float64 `json:"numberOfDroppedPackets"`
+	MalformedPkt        float64 `json:"malformed_packet_counter"`
+	UnknownsrvrPkt      float64 `json:"numberOfPacketFromUnknownServer"`
+	RoundTripPkt        float64 `json:"packetRoundtripTimeInMilis"`
+}

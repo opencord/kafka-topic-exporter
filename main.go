@@ -28,9 +28,13 @@ var (
 	broker      = flag.String("broker", "voltha-kafka.default.svc.cluster.local:9092", "The Kafka broker")
 	volthaTopic = "voltha.kpis"
 	onosTopic   = "onos.kpis"
+	//For Stats
+	statsTopic  = "authstats.kpis"
 
 	volthaTopicPointer = &volthaTopic
 	onosTopicPointer   = &onosTopic
+	//For stats
+	statsTopicPointer  = &statsTopic
 )
 
 var brokers []string
@@ -40,7 +44,7 @@ func kafkaInit(brokers []string) {
 	config.Consumer.Return.Errors = true
 	var wg sync.WaitGroup
 
-	wg.Add(2) // we are spinning up two thread and we need to wait for them to exit before stopping the kafka connection
+	wg.Add(3) // we are spinning up three thread and we need to wait for them to exit before stopping the kafka connection
 
 	master, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
@@ -55,6 +59,8 @@ func kafkaInit(brokers []string) {
 	}()
 	go VOLTHAListener(volthaTopicPointer, master, wg)
 	go ONOSListener(onosTopicPointer, master, wg)
+	//For stats
+	go STATSListner(statsTopicPointer, master, wg)
 
 	wg.Wait()
 }
@@ -74,6 +80,8 @@ func init() {
 	fmt.Println("Connecting to broker: ", brokers)
 	fmt.Println("Listening to voltha on topic: ", *volthaTopicPointer)
 	fmt.Println("Listening to onos on topic: ", *onosTopicPointer)
+	//For stats
+	fmt.Println("Listening to Authentication stats on topic: ", *statsTopicPointer)
 
 	// register metrics within Prometheus
 	prometheus.MustRegister(volthaTxBytesTotal)
@@ -89,6 +97,20 @@ func init() {
 	prometheus.MustRegister(onosRxPacketsTotal)
 	prometheus.MustRegister(onosTxDropPacketsTotal)
 	prometheus.MustRegister(onosRxDropPacketsTotal)
+
+	//For stats
+	// Metrics have to be registered to be exposed:
+	prometheus.MustRegister(Acceptpktstats)
+	prometheus.MustRegister(Rejectpktstats)
+	prometheus.MustRegister(Challengepktstats)
+	prometheus.MustRegister(Reqstpktstats)
+	prometheus.MustRegister(InvalidValidatorstats)
+	prometheus.MustRegister(UnknownTypestats)
+	prometheus.MustRegister(PendingRequeststats)
+	prometheus.MustRegister(DroppedPktstats)
+	prometheus.MustRegister(MalformedRespstats)
+	prometheus.MustRegister(Unknownserverstats)
+	prometheus.MustRegister(RoundtripPktstats)
 }
 
 func main() {
