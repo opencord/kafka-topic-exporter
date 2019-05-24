@@ -15,9 +15,13 @@
 package main
 
 import (
-	"flag"
-	"fmt"
+	"strconv"
+	"logger"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/Shopify/sarama"
@@ -25,55 +29,77 @@ import (
 )
 
 var (
-	broker      = flag.String("broker", "voltha-kafka.default.svc.cluster.local:9092", "The Kafka broker")
-	volthaTopic = "voltha.kpis"
-	onosTopic   = "onos.kpis"
-
-	volthaTopicPointer = &volthaTopic
-	onosTopicPointer   = &onosTopic
+	config Config
+	broker string
+	topics []string
+	targetPort int
 )
 
-var brokers []string
-
-func kafkaInit(brokers []string) {
+func kafkaInit() {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	var wg sync.WaitGroup
 
-	wg.Add(2) // we are spinning up two thread and we need to wait for them to exit before stopping the kafka connection
-
-	master, err := sarama.NewConsumer(brokers, config)
+	master, err := sarama.NewConsumer([]string{broker}, config)
 	if err != nil {
-		fmt.Println("kafkaInit panic")
+		logger.Panic("kafkaInit panic")
 		panic(err)
 	}
 	defer func() {
-		fmt.Println("kafkaInit close connection")
+		logger.Debug("kafkaInit close connection")
 		if err := master.Close(); err != nil {
 			panic(err)
 		}
 	}()
-	go VOLTHAListener(volthaTopicPointer, master, wg)
-	go ONOSListener(onosTopicPointer, master, wg)
+
+	// we are spinning threads for each topic, we need to wait for
+	// them to exit before stopping the kafka connection
+	wg.Add(len(topics))
+	for _, topic := range topics {
+		t := topic
+		go topicListener(&t, master, wg)
+	}
 
 	wg.Wait()
 }
 
 func runServer() {
-	fmt.Println("Starting Server")
+	if targetPort == 0 {
+		logger.Warn("Prometheus target port not configured, using default 8080")
+		targetPort = 8080
+	}
+	logger.Debug("Starting HTTP Server on %d port", targetPort)
 	http.Handle("/metrics", prometheus.Handler())
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+strconv.Itoa(targetPort), nil)
+}
+
+func loadConfigFile() Config {
+	m := Config{}
+	// this file path is configmap mounted in pod yaml
+	yamlFile, err := ioutil.ReadFile("/etc/config/conf.yaml")
+	if err != nil {
+		log.Printf("yamlFile.Get err: %v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, &m)
+	if err != nil {
+		log.Fatalf("Unmarshal: %v", err)
+	}
+	return m
 }
 
 func init() {
 
-	// read config from cli flags
-	flag.Parse()
-	brokers = make([]string, 0)
-	brokers = []string{*broker}
-	fmt.Println("Connecting to broker: ", brokers)
-	fmt.Println("Listening to voltha on topic: ", *volthaTopicPointer)
-	fmt.Println("Listening to onos on topic: ", *onosTopicPointer)
+	// load config
+	confData := loadConfigFile()
+	// read kafka topics from config
+	broker = confData.Broker.Host
+	topics = confData.Broker.Topics
+	targetPort = confData.Target.Port
+
+	//logger setup
+	logger.Setup(confData.Logger.Host, strings.ToUpper(confData.Logger.LogLevel))
+
+	logger.Info("Connecting to broker: [%s]", broker)
 
 	// register metrics within Prometheus
 	prometheus.MustRegister(volthaTxBytesTotal)
@@ -92,6 +118,6 @@ func init() {
 }
 
 func main() {
-	go kafkaInit(brokers)
+	go kafkaInit()
 	runServer()
 }
