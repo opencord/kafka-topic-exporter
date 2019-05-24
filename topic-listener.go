@@ -15,22 +15,20 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"sync"
 
 	"github.com/Shopify/sarama"
+	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
 )
 
-func VOLTHAListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
-	fmt.Println("Starting VOLTHAListener")
+func topicListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
+	logger.Info("Starting topicListener for [%s]", *topic)
 	defer wg.Done()
 	consumer, err := master.ConsumePartition(*topic, 0, sarama.OffsetOldest)
 	if err != nil {
-		fmt.Println("VOLTHAListener panic")
+		logger.Error("topicListener panic")
 		panic(err)
 	}
 	signals := make(chan os.Signal, 1)
@@ -40,22 +38,12 @@ func VOLTHAListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
 		for {
 			select {
 			case err := <-consumer.Errors():
-				fmt.Println(err)
+				logger.Error("%s", err)
 			case msg := <-consumer.Messages():
-				// fmt.Println(string(msg.Value))
-
-				kpi := VolthaKPI{}
-
-				err := json.Unmarshal(msg.Value, &kpi)
-
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				exportVolthaKPI(kpi)
-
+				logger.Debug("Message on %s: %s", *topic, string(msg.Value))
+				export(topic, msg.Value)
 			case <-signals:
-				fmt.Println("Interrupt is detected")
+				logger.Warn("Interrupt is detected")
 				doneCh <- struct{}{}
 			}
 		}

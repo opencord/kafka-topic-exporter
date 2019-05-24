@@ -21,6 +21,9 @@ ADD . /app/
 WORKDIR /app
 RUN go get github.com/prometheus/client_golang/prometheus
 RUN go get github.com/Shopify/sarama
+RUN go get github.com/gfremex/logrus-kafka-hook
+RUN go get github.com/sirupsen/logrus
+RUN go get gerrit.opencord.org/kafka-topic-exporter/common/logger
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM alpine:3.8
