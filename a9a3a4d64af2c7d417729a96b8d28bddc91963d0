@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ada2b497_5e0d1076",
+        "filename": "Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2019-05-24T18:34:25Z",
+      "side": 1,
+      "message": "More a memo than a comment, at a certain point we should move this codebase to use \"go dep\"",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 37
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f6e65133_bfa2a1a2",
+        "filename": "VERSION",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2019-05-24T18:34:25Z",
+      "side": 1,
+      "message": "if we are not done yet we should use a \"-dev\" version so that the container is not tagged",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 5
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c519e1f3_56e7b5f7",
+        "filename": "logger.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2019-05-24T18:34:25Z",
+      "side": 1,
+      "message": "what about keeping the logger in a separate package? It will make our life easier down the line if we want to release a logging library for Go code (as this same code is used in bbsim) and it will make the code a little more readable",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 12
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5cd2bb60_141fa78d",
+        "filename": "topic-exporter.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2019-05-24T18:34:25Z",
+      "side": 1,
+      "message": "is this code needed?",
+      "range": {
+        "startLine": 355,
+        "startChar": 1,
+        "endLine": 370,
+        "endChar": 28
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
