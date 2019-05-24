@@ -1,0 +1,19 @@
+{
+  "broker": {
+      "name": "broker-name",
+      "host": "cord-kafka:9092",
+      "description": "The kafka broker",
+      "topics": [
+        "voltha.kpis",
+        "onos.kpis",
+        "importer.kpis"
+      ]
+  },
+  "logger": {
+    "log_level": "debug",
+    "host": "cord-kafka:9092"
+  },
+  "target": {
+    "target-name": "prometheus"
+  }
+}

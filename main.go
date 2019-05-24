@@ -15,8 +15,11 @@
 package main
 
 import (
-	"flag"
-	"fmt"
+	"os"
+	"log"
+	"strings"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"sync"
 
@@ -24,56 +27,77 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-var (
-	broker      = flag.String("broker", "voltha-kafka.default.svc.cluster.local:9092", "The Kafka broker")
-	volthaTopic = "voltha.kpis"
-	onosTopic   = "onos.kpis"
+var topics []interface{}
+var broker string
 
-	volthaTopicPointer = &volthaTopic
-	onosTopicPointer   = &onosTopic
-)
-
-var brokers []string
-
-func kafkaInit(brokers []string) {
+func kafkaInit(broker string) {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	var wg sync.WaitGroup
 
 	wg.Add(2) // we are spinning up two thread and we need to wait for them to exit before stopping the kafka connection
 
-	master, err := sarama.NewConsumer(brokers, config)
+	master, err := sarama.NewConsumer([]string{broker}, config)
 	if err != nil {
-		fmt.Println("kafkaInit panic")
+		Panic("kafkaInit panic")
 		panic(err)
 	}
 	defer func() {
-		fmt.Println("kafkaInit close connection")
+		Debug("kafkaInit close connection")
 		if err := master.Close(); err != nil {
 			panic(err)
 		}
 	}()
-	go VOLTHAListener(volthaTopicPointer, master, wg)
-	go ONOSListener(onosTopicPointer, master, wg)
+	for _, topic := range topics {
+		t := topic.(string)
+		go topicListener(&t, master, wg)
+	}
 
 	wg.Wait()
 }
 
 func runServer() {
-	fmt.Println("Starting Server")
+	Debug("Starting Server")
 	http.Handle("/metrics", prometheus.Handler())
 	http.ListenAndServe(":8080", nil)
 }
 
+func loadConfigFile() map[string] interface{} {
+	// this file path is configmap mounted in pod yaml
+	jsonFile, err := os.Open("/etc/config/config.json")
+	if err != nil {
+		log.Fatal("Config file open failure - ",err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	confData := make(map[string]interface{})
+	err = json.Unmarshal([]byte(byteValue), &confData)
+	if err != nil {
+		log.Fatal("Config file parsing failed - ", err)
+	}
+	return confData
+}
+
 func init() {
 
-	// read config from cli flags
-	flag.Parse()
-	brokers = make([]string, 0)
-	brokers = []string{*broker}
-	fmt.Println("Connecting to broker: ", brokers)
-	fmt.Println("Listening to voltha on topic: ", *volthaTopicPointer)
-	fmt.Println("Listening to onos on topic: ", *onosTopicPointer)
+	// read configuration from configmap
+	confData := loadConfigFile()
+
+	// read kafka topics from configmap
+	kafkaBroker := confData["broker"].(map[string]interface{})
+	broker = kafkaBroker["host"].(string)
+	topics = kafkaBroker["topics"].([]interface{})
+
+	// read logger configuration from configmap
+	logConf := confData["logger"].(map[string]interface{})
+	logLevel := logConf["log_level"].(string)
+	logBroker := logConf["host"].(string)
+
+	// logger setup
+	Setup(logBroker, strings.ToUpper(logLevel))
+
+	Info("Connecting to broker: [%s]", broker)
 
 	// register metrics within Prometheus
 	prometheus.MustRegister(volthaTxBytesTotal)
@@ -92,6 +116,6 @@ func init() {
 }
 
 func main() {
-	go kafkaInit(brokers)
+	go kafkaInit(broker)
 	runServer()
 }

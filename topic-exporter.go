@@ -15,13 +15,15 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/prometheus/client_golang/prometheus"
+	"log"
 )
 
 var (
 	volthaTxBytesTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "voltha_tx_bytes_total",
+			Name: "a",
 			Help: "Number of total bytes transmitted",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
@@ -62,6 +64,52 @@ var (
 			Help: "Number of total received packets error",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+
+	onosTxBytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onos_tx_bytes_total",
+			Help: "Number of total bytes transmitted",
+		},
+		[]string{"device_id", "port_id"},
+	)
+	onosRxBytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onos_rx_bytes_total",
+			Help: "Number of total bytes received",
+		},
+		[]string{"device_id", "port_id"},
+	)
+	onosTxPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onos_tx_packets_total",
+			Help: "Number of total packets transmitted",
+		},
+		[]string{"device_id", "port_id"},
+	)
+	onosRxPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onos_rx_packets_total",
+			Help: "Number of total packets received",
+		},
+		[]string{"device_id", "port_id"},
+	)
+
+	onosTxDropPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onos_tx_drop_packets_total",
+			Help: "Number of total transmitted packets dropped",
+		},
+		[]string{"device_id", "port_id"},
+	)
+
+	onosRxDropPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onos_rx_drop_packets_total",
+			Help: "Number of total received packets dropped",
+		},
+		[]string{"device_id", "port_id"},
 	)
 )
 
@@ -258,5 +306,92 @@ func exportVolthaKPI(kpi VolthaKPI) {
 		case "voltha.internal":
 			// Voltha Internal. Do nothing.
 		}
+	}
+}
+
+func exportOnosKPI(kpi OnosKPI) {
+
+	for _, data := range kpi.Ports {
+
+		onosTxBytesTotal.WithLabelValues(
+			kpi.DeviceID,
+			data.PortID,
+		).Set(data.TxBytes)
+
+		onosRxBytesTotal.WithLabelValues(
+			kpi.DeviceID,
+			data.PortID,
+		).Set(data.RxBytes)
+
+		onosTxPacketsTotal.WithLabelValues(
+			kpi.DeviceID,
+			data.PortID,
+		).Set(data.TxPackets)
+
+		onosRxPacketsTotal.WithLabelValues(
+			kpi.DeviceID,
+			data.PortID,
+		).Set(data.RxPackets)
+
+		onosTxDropPacketsTotal.WithLabelValues(
+			kpi.DeviceID,
+			data.PortID,
+		).Set(data.TxPacketsDrop)
+
+		onosRxDropPacketsTotal.WithLabelValues(
+			kpi.DeviceID,
+			data.PortID,
+		).Set(data.RxPacketsDrop)
+
+	}
+}
+
+func exportImporterKPI(kpi map[string] interface{}) {
+	Info("To be implemented")
+}
+
+func exportToPrometheus(topic *string, data []byte) {
+
+	//KPIMap = make(map[string]interface{})
+	//err := json.Unmarshal(data, &KPIMap)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//switch *topic {
+	//case "voltha.kpis":
+	//	exportVolthaKPI(KPIMap)
+	//case "onos.kpis":
+	//	exportOnosKPI(KPIMap)
+	//case "importer.kpis":
+	//	exportImporterKPI(KPIMap)
+	//default:
+	//	Warn("Unexpected export. Should not come here")
+	//}
+	//exportImporterKPI(KPIMap)
+
+	if *topic == "voltha.kpis" {
+		kpi := VolthaKPI{}
+		err := json.Unmarshal(data, &kpi)
+		if err != nil {
+			log.Fatal(err)
+		}
+		exportVolthaKPI(kpi)
+
+	} else if *topic == "onos.kpis" {
+		kpi := OnosKPI{}
+		err := json.Unmarshal(data, &kpi)
+		if err != nil {
+			log.Fatal(err)
+		}
+		exportOnosKPI(kpi)
+	} else if *topic == "importer.kpis" {
+		//kpi := ImporterKPI{}
+		err := json.Unmarshal(data, &ImporterKPI)
+		if err != nil {
+			log.Fatal(err)
+		}
+		exportImporterKPI(ImporterKPI)
+	} else {
+		Info("Currently not supported")
 	}
 }

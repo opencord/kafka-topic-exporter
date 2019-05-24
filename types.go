@@ -79,3 +79,6 @@ type OnosKPI struct {
 	DeviceID string      `json:"deviceId"`
 	Ports    []*OnosPort `json:"ports"`
 }
+
+var ImporterKPI map[string]interface{}
+
