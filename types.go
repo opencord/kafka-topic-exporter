@@ -14,8 +14,33 @@
 
 package main
 
-// KPI Events format
+// configuration
+type BrokerInfo struct {
+	Name			string `yaml: name`
+	Host			string `yaml: host`
+	Description		string `yaml: description`
+	Topics		  []string `yaml: topics`
+}
 
+type LoggerInfo struct {
+	LogLevel		string `yaml: loglevel`
+	Host			string `yaml: host`
+}
+
+type TargetInfo struct {
+	Type			string `yaml: type`
+	Name			string `yaml: name`
+	Port			int    `yaml: port`
+	Description		string `yaml: description`
+}
+
+type Config struct {
+	Broker		BrokerInfo `yaml: broker`
+	Logger		LoggerInfo `yaml: logger`
+	Target		TargetInfo `yaml: "target"`
+}
+
+// KPI Events format
 type Metrics struct {
 	TxBytes            float64 `json:"tx_bytes"`
 	TxPackets          float64 `json:"tx_packets"`
@@ -78,4 +103,9 @@ type OnosPort struct {
 type OnosKPI struct {
 	DeviceID string      `json:"deviceId"`
 	Ports    []*OnosPort `json:"ports"`
+}
+
+type ImporterKPI struct {
+	DeviceID string 	`json: "deviceId"`
+	// TODO: add metrics data
 }
