@@ -15,9 +15,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"sync"
@@ -25,12 +22,12 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-func VOLTHAListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
-	fmt.Println("Starting VOLTHAListener")
+func topicListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
+	Info("Starting topicListener for [%s]", *topic)
 	defer wg.Done()
 	consumer, err := master.ConsumePartition(*topic, 0, sarama.OffsetOldest)
 	if err != nil {
-		fmt.Println("VOLTHAListener panic")
+		Error("topicListener panic")
 		panic(err)
 	}
 	signals := make(chan os.Signal, 1)
@@ -40,22 +37,12 @@ func VOLTHAListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
 		for {
 			select {
 			case err := <-consumer.Errors():
-				fmt.Println(err)
+				Error("%s", err)
 			case msg := <-consumer.Messages():
-				// fmt.Println(string(msg.Value))
-
-				kpi := VolthaKPI{}
-
-				err := json.Unmarshal(msg.Value, &kpi)
-
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				exportVolthaKPI(kpi)
-
+				Debug("Message on %s: %s", *topic, string(msg.Value))
+				exportToPrometheus(topic, msg.Value)
 			case <-signals:
-				fmt.Println("Interrupt is detected")
+				Warn("Interrupt is detected")
 				doneCh <- struct{}{}
 			}
 		}
