@@ -15,17 +15,16 @@
 package main
 
 import (
-	"strconv"
+	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"github.com/Shopify/sarama"
+	"github.com/prometheus/client_golang/prometheus"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/Shopify/sarama"
-	"github.com/prometheus/client_golang/prometheus"
-	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
 )
 
 func kafkaInit(broker BrokerInfo) {
@@ -34,6 +33,7 @@ func kafkaInit(broker BrokerInfo) {
 	var wg sync.WaitGroup
 
 	master, err := sarama.NewConsumer([]string{broker.Host}, config)
+
 	if err != nil {
 		logger.Panic("kafkaInit panic")
 		panic(err)
@@ -71,7 +71,6 @@ func runServer(target TargetInfo) {
 }
 
 func init() {
-
 	// register metrics within Prometheus
 	prometheus.MustRegister(volthaTxBytesTotal)
 	prometheus.MustRegister(volthaRxBytesTotal)
@@ -86,6 +85,19 @@ func init() {
 	prometheus.MustRegister(onosRxPacketsTotal)
 	prometheus.MustRegister(onosTxDropPacketsTotal)
 	prometheus.MustRegister(onosRxDropPacketsTotal)
+
+	prometheus.MustRegister(onosaaaRxAcceptResponses)
+	prometheus.MustRegister(onosaaaRxRejectResponses)
+	prometheus.MustRegister(onosaaaRxChallengeResponses)
+	prometheus.MustRegister(onosaaaTxAccessRequests)
+	prometheus.MustRegister(onosaaaRxInvalidValidators)
+	prometheus.MustRegister(onosaaaRxUnknownType)
+	prometheus.MustRegister(onosaaaPendingRequests)
+	prometheus.MustRegister(onosaaaRxDroppedResponses)
+	prometheus.MustRegister(onosaaaRxMalformedResponses)
+	prometheus.MustRegister(onosaaaRxUnknownserver)
+	prometheus.MustRegister(onosaaaRequestRttMillis)
+	prometheus.MustRegister(onosaaaRequestReTx)
 }
 
 func loadConfigFile() Config {

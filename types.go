@@ -109,3 +109,18 @@ type ImporterKPI struct {
 	DeviceID string 	`json: "deviceId"`
 	// TODO: add metrics data
 }
+
+type OnosAaaKPI struct {
+	RxAcceptResponses    float64 `json:"acceptResponsesRx"`
+	RxRejectResponses    float64 `json:"rejectResponsesRx"`
+	RxChallengeResponses float64 `json:"challengeResponsesRx"`
+	TxAccessRequests     float64 `json:"accessRequestsTx"`
+	RxInvalidValidators  float64 `json:"invalidValidatorsRx"`
+	RxUnknownType        float64 `json:"unknownTypeRx"`
+	PendingRequests      float64 `json:"pendingRequests"`
+	RxDroppedResponses   float64 `json:"droppedResponsesRx"`
+	RxMalformedResponses float64 `json:"malformedResponsesRx"`
+	RxUnknownserver      float64 `json:"unknownServerRx"`
+	RequestRttMillis     float64 `json:"requestRttMillis"`
+	RequestReTx          float64 `json:"requestReTx"`
+}

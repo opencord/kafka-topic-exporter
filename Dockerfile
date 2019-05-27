@@ -13,17 +13,21 @@
 # limitations under the License.
 
 # docker build -t opencord/kafka-topic-exporter:latest .
-# docker build -t 10.90.0.101:30500/opencord/kafka-topic-exporter:latest .
+# docker build -t 10.128.22.1:30500/opencord/kafka-topic-exporter:latest .
 
 FROM golang:1.10-stretch as builder
 RUN mkdir -p /go/src/gerrit.opencord.org/kafka-topic-exporter
-ADD . /go/src/gerrit.opencord.org/kafka-topic-exporter
-WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter
 RUN go get -u github.com/golang/dep/cmd/dep
+ADD Gopkg.lock /go/src/gerrit.opencord.org/kafka-topic-exporter
+ADD Gopkg.toml /go/src/gerrit.opencord.org/kafka-topic-exporter
+WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter
 RUN dep ensure --vendor-only
+ADD . /go/src/gerrit.opencord.org/kafka-topic-exporter
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM alpine:3.8
 WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter/
 COPY --from=builder /go/src/gerrit.opencord.org/kafka-topic-exporter/main .
+# FIXME this should be mounted by the helm charts
+ADD config/conf.yaml /etc/config/conf.yaml
 ENTRYPOINT ["./main"]

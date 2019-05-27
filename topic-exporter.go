@@ -113,6 +113,68 @@ var (
 		},
 		[]string{"device_id", "port_id"},
 	)
+
+	// onos.aaa kpis
+	onosaaaRxAcceptResponses = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_accept_responses",
+			Help: "Number of access accept packets received from the server",
+		})
+	onosaaaRxRejectResponses = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_reject_responses",
+			Help: "Number of access reject packets received from the server",
+		})
+	onosaaaRxChallengeResponses = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_challenge_response",
+			Help: "Number of access challenge packets received from the server",
+		})
+	onosaaaTxAccessRequests = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_access_requests",
+			Help: "Number of access request packets sent to the server",
+		})
+	onosaaaRxInvalidValidators = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_invalid_validators",
+			Help: "Number of access response packets received from the server with an invalid validator",
+		})
+	onosaaaRxUnknownType = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_unknown_type",
+			Help: "Number of packets of an unknown RADIUS type received from the accounting server",
+		})
+	onosaaaPendingRequests = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_pending_responses",
+			Help: "Number of access request packets pending a response from the server",
+		})
+	onosaaaRxDroppedResponses = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_dropped_responses",
+			Help: "Number of dropped packets received from the accounting server",
+		})
+	onosaaaRxMalformedResponses = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_malformed_responses",
+			Help: "Number of malformed access response packets received from the server",
+		})
+	onosaaaRxUnknownserver = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_from_unknown_server",
+			Help: "Number of packets received from an unknown server",
+		})
+	onosaaaRequestRttMillis = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_request_rttmillis",
+			Help: "Roundtrip packet time to the accounting server in Miliseconds",
+		})
+	onosaaaRequestReTx = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_request_re_tx",
+			Help: "Number of access request packets retransmitted to the server",
+		})
 )
 
 func exportVolthaKPI(kpi VolthaKPI) {
@@ -352,6 +414,33 @@ func exportImporterKPI(kpi ImporterKPI) {
 	logger.Info("To be implemented")
 }
 
+func exportOnosAaaKPI(kpi OnosAaaKPI) {
+
+	onosaaaRxAcceptResponses.Set(kpi.RxAcceptResponses)
+
+	onosaaaRxRejectResponses.Set(kpi.RxRejectResponses)
+
+	onosaaaRxChallengeResponses.Set(kpi.RxChallengeResponses)
+
+	onosaaaTxAccessRequests.Set(kpi.TxAccessRequests)
+
+	onosaaaRxInvalidValidators.Set(kpi.RxInvalidValidators)
+
+	onosaaaRxUnknownType.Set(kpi.RxUnknownType)
+
+	onosaaaPendingRequests.Set(kpi.PendingRequests)
+
+	onosaaaRxDroppedResponses.Set(kpi.RxDroppedResponses)
+
+	onosaaaRxMalformedResponses.Set(kpi.RxMalformedResponses)
+
+	onosaaaRxUnknownserver.Set(kpi.RxUnknownserver)
+
+	onosaaaRequestRttMillis.Set(kpi.RequestRttMillis)
+
+	onosaaaRequestReTx.Set(kpi.RequestReTx)
+}
+
 func export(topic *string, data []byte) {
 	switch *topic {
 	case "voltha.kpis":
@@ -375,6 +464,13 @@ func export(topic *string, data []byte) {
 			log.Fatal(err)
 		}
 		exportImporterKPI(kpi)
+	case "onos.aaa.stats.kpis":
+		kpi := OnosAaaKPI{}
+		err := json.Unmarshal(data, &kpi)
+		if err != nil {
+			log.Fatal(err)
+		}
+		exportOnosAaaKPI(kpi)
 	default:
 		logger.Warn("Unexpected export. Should not come here")
 	}
