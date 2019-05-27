@@ -25,12 +25,14 @@ import (
 )
 
 var (
-	broker      = flag.String("broker", "voltha-kafka.default.svc.cluster.local:9092", "The Kafka broker")
-	volthaTopic = "voltha.kpis"
-	onosTopic   = "onos.kpis"
+	broker       = flag.String("broker", "voltha-kafka.default.svc.cluster.local:9092", "The Kafka broker")
+	volthaTopic  = "voltha.kpis"
+	onosTopic    = "onos.kpis"
+	onosaaaTopic = "onos.aaa.stats.kpis"
 
-	volthaTopicPointer = &volthaTopic
-	onosTopicPointer   = &onosTopic
+	volthaTopicPointer  = &volthaTopic
+	onosTopicPointer    = &onosTopic
+	onosaaaTopicPointer = &onosaaaTopic
 )
 
 var brokers []string
@@ -40,7 +42,7 @@ func kafkaInit(brokers []string) {
 	config.Consumer.Return.Errors = true
 	var wg sync.WaitGroup
 
-	wg.Add(2) // we are spinning up two thread and we need to wait for them to exit before stopping the kafka connection
+	wg.Add(3) // we are spinning up three thread and we need to wait for them to exit before stopping the kafka connection
 
 	master, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
@@ -55,6 +57,7 @@ func kafkaInit(brokers []string) {
 	}()
 	go VOLTHAListener(volthaTopicPointer, master, wg)
 	go ONOSListener(onosTopicPointer, master, wg)
+	go ONOSAAAListner(onosaaaTopicPointer, master, wg)
 
 	wg.Wait()
 }
@@ -74,6 +77,7 @@ func init() {
 	fmt.Println("Connecting to broker: ", brokers)
 	fmt.Println("Listening to voltha on topic: ", *volthaTopicPointer)
 	fmt.Println("Listening to onos on topic: ", *onosTopicPointer)
+	fmt.Println("Listening to onos AAA stats on topic: ", *onosaaaTopicPointer)
 
 	// register metrics within Prometheus
 	prometheus.MustRegister(volthaTxBytesTotal)
@@ -89,6 +93,19 @@ func init() {
 	prometheus.MustRegister(onosRxPacketsTotal)
 	prometheus.MustRegister(onosTxDropPacketsTotal)
 	prometheus.MustRegister(onosRxDropPacketsTotal)
+
+	prometheus.MustRegister(onosaaaRxAcceptResponses)
+	prometheus.MustRegister(onosaaaRxRejectResponses)
+	prometheus.MustRegister(onosaaaRxChallengeResponses)
+	prometheus.MustRegister(onosaaaTxAccessRequests)
+	prometheus.MustRegister(onosaaaRxInvalidValidators)
+	prometheus.MustRegister(onosaaaRxUnknownType)
+	prometheus.MustRegister(onosaaaPendingRequests)
+	prometheus.MustRegister(onosaaaRxDroppedResponses)
+	prometheus.MustRegister(onosaaaRxMalformedResponses)
+	prometheus.MustRegister(onosaaaRxUnknownserver)
+	prometheus.MustRegister(onosaaaRequestRttMillis)
+	prometheus.MustRegister(onosaaaRequestReTx)
 }
 
 func main() {
