@@ -48,6 +48,29 @@
     },
     {
       "key": {
+        "uuid": "b7c4322b_d8f0327e",
+        "filename": "config.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-28T14:20:41Z",
+      "side": 1,
+      "message": "As discussed, we should consider using yaml rather than json.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c519e1f3_56e7b5f7",
         "filename": "logger.go",
         "patchSetId": 2
@@ -64,6 +87,75 @@
         "startChar": 0,
         "endLine": 17,
         "endChar": 12
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa1502d_496ea777",
+        "filename": "logger.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-28T14:20:41Z",
+      "side": 1,
+      "message": "Calling this \"log_topics\" may make it clear that these are topics the logger is configured to use and avoid confusion with the \"topics\" field in the config.",
+      "range": {
+        "startLine": 33,
+        "startChar": 30,
+        "endLine": 33,
+        "endChar": 36
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2732da26_c565bb8f",
+        "filename": "main.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-28T14:20:41Z",
+      "side": 1,
+      "message": "Should this number be configurable? Does it relate to the number of topics being listened on?",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 9
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "635f3d1f_b2ed3fe8",
+        "filename": "main.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-28T14:20:41Z",
+      "side": 1,
+      "message": "Making the port number configurable in the config file might be useful.",
+      "range": {
+        "startLine": 62,
+        "startChar": 22,
+        "endLine": 62,
+        "endChar": 27
       },
       "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
