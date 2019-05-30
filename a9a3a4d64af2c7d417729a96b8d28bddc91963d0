@@ -141,6 +141,30 @@
     },
     {
       "key": {
+        "uuid": "78c1a9c2_378fbdc7",
+        "filename": "logger.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-30T14:54:48Z",
+      "side": 1,
+      "message": "Ah, got it!",
+      "parentUuid": "09d6b673_285c6680",
+      "range": {
+        "startLine": 33,
+        "startChar": 30,
+        "endLine": 33,
+        "endChar": 36
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2732da26_c565bb8f",
         "filename": "main.go",
         "patchSetId": 2
@@ -176,6 +200,30 @@
       "side": 1,
       "message": "It relates but not directly, it\u0027s the number of threads we need to wait for. So far we have 1 thread for 1 topic, but that\u0027s not mandatory.",
       "parentUuid": "2732da26_c565bb8f",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 9
+      },
+      "revId": "a9a3a4d64af2c7d417729a96b8d28bddc91963d0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b7f03f9e_7711ce9f",
+        "filename": "main.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-30T14:54:48Z",
+      "side": 1,
+      "message": "Sounds good, thanks.",
+      "parentUuid": "138af851_0c1a5b00",
       "range": {
         "startLine": 38,
         "startChar": 8,
