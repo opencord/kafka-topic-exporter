@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "efb867b6_7bcd90d7",
+        "filename": "main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2019-05-31T17:45:28Z",
+      "side": 1,
+      "message": "I believe you\u0027ll need to import the logger now that it sits in a separate package, for example in BBSIM we do: \"gerrit.opencord.org/voltha-bbsim/common/logger\"",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 1
+      },
+      "revId": "be3618ca258e63ccde5bf1c8e6a6073a260fe21f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5017e4b1_9a52fb24",
         "filename": "main.go",
         "patchSetId": 4
