@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5017e4b1_9a52fb24",
+        "filename": "main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-05-31T17:17:59Z",
+      "side": 1,
+      "message": "Could we pass these as arguments to kafkaInit() and runServer() rather than implementing them as globals?",
+      "range": {
+        "startLine": 32,
+        "startChar": 2,
+        "endLine": 32,
+        "endChar": 14
+      },
+      "revId": "be3618ca258e63ccde5bf1c8e6a6073a260fe21f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
