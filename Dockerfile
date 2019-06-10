@@ -16,17 +16,14 @@
 # docker build -t 10.90.0.101:30500/opencord/kafka-topic-exporter:latest .
 
 FROM golang:1.10-stretch as builder
-RUN mkdir /app
-ADD . /app/
-WORKDIR /app
-RUN go get github.com/prometheus/client_golang/prometheus
-RUN go get github.com/Shopify/sarama
-RUN go get github.com/gfremex/logrus-kafka-hook
-RUN go get github.com/sirupsen/logrus
-RUN go get gerrit.opencord.org/kafka-topic-exporter/common/logger
+RUN mkdir -p /go/src/gerrit.opencord.org/kafka-topic-exporter
+ADD . /go/src/gerrit.opencord.org/kafka-topic-exporter
+WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter
+RUN go get -u github.com/golang/dep/cmd/dep
+RUN dep ensure --vendor-only
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM alpine:3.8
-WORKDIR /app/
-COPY --from=builder /app/main .
+WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter/
+COPY --from=builder /go/src/gerrit.opencord.org/kafka-topic-exporter/main .
 ENTRYPOINT ["./main"]

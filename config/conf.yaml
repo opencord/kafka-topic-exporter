@@ -3,7 +3,7 @@ broker:
   name: broker-name
   host: voltha-kafka.default.svc.cluster.local:9092
   description: The kafka broker
-  topics: [voltha.kpis, onos.kpis, importer.kpis]
+  topics: [voltha.kpis, onos.kpis]
 logger:
   loglevel: debug
   host: voltha-kafka.default.svc.cluster.local:9092
