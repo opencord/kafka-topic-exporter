@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0a8e594_1de23f75",
+        "filename": "Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-06-13T00:14:30Z",
+      "side": 1,
+      "message": "Is it necessary to use the full source path when installing the binary?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 57
+      },
+      "revId": "8bb1982bc971110cccf05981cc4731275bc7bb5b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "36b6234c_31d7db8e",
+        "filename": "Makefile",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-06-13T00:14:30Z",
+      "side": 1,
+      "message": "Ideally this would run `go test` once unit tests are added to this repository. In that case is `docker-build` a necessary prerequisite for this target? Maybe it\u0027s just empty for now.",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 18
+      },
+      "revId": "8bb1982bc971110cccf05981cc4731275bc7bb5b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f97e8466_2a1051f1",
+        "filename": "Makefile",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-06-13T00:14:30Z",
+      "side": 1,
+      "message": "Consider adding `dependencies` and `lint` Make target, similar to this:\n\ndependencies:\n        [ -d \"vendor\" ] || dep ensure\n\nlint: dependencies\n        find $(GOPATH)/src/github.com/opencord/cordctl -name \"*.go\" -not -path \u0027$(GOPATH)/src/github.com/opencord/cordc\ntl/vendor/*\u0027 | xargs gofmt -l\n        go vet ./...\n        dep check",
+      "revId": "8bb1982bc971110cccf05981cc4731275bc7bb5b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
