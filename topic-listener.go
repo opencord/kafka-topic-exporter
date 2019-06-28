@@ -28,8 +28,8 @@ func topicListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
 	defer wg.Done()
 	consumer, err := master.ConsumePartition(*topic, 0, sarama.OffsetOldest)
 	if err != nil {
-		logger.Error("topicListener panic")
-		panic(err)
+		logger.Error("topicListener panic, topic=[%s]: %s", *topic, err.Error())
+		return
 	}
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt)
@@ -38,9 +38,9 @@ func topicListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {
 		for {
 			select {
 			case err := <-consumer.Errors():
-				logger.Error("%s", err)
+				logger.Error("Consumer error: %s", err.Err)
 			case msg := <-consumer.Messages():
-				logger.Debug("Message on %s: %s", *topic, string(msg.Value))
+				logger.Debug("Got message on topic=[%s]: %s", *topic, string(msg.Value))
 				export(topic, msg.Value)
 			case <-signals:
 				logger.Warn("Interrupt is detected")

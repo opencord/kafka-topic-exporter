@@ -16,9 +16,8 @@ package main
 
 import (
 	"encoding/json"
-	"log"
-	"github.com/prometheus/client_golang/prometheus"
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 var (
@@ -447,31 +446,31 @@ func export(topic *string, data []byte) {
 		kpi := VolthaKPI{}
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
-			log.Fatal(err)
+			logger.Error("Invalid msg on voltha.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
 		}
 		exportVolthaKPI(kpi)
 	case "onos.kpis":
 		kpi := OnosKPI{}
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
-			log.Fatal(err)
+			logger.Error("Invalid msg on onos.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
 		}
 		exportOnosKPI(kpi)
 	case "importer.kpis":
 		kpi := ImporterKPI{}
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
-			log.Fatal(err)
+			logger.Error("Invalid msg on importer.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
 		}
 		exportImporterKPI(kpi)
 	case "onos.aaa.stats.kpis":
 		kpi := OnosAaaKPI{}
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
-			log.Fatal(err)
+			logger.Error("Invalid msg on onos.aaa.stats.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
 		}
 		exportOnosAaaKPI(kpi)
 	default:
-		logger.Warn("Unexpected export. Should not come here")
+		logger.Warn("Unexpected export. Topic [%s] not supported. Should not come here", *topic)
 	}
 }
