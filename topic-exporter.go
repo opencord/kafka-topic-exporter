@@ -471,6 +471,6 @@ func export(topic *string, data []byte) {
 		}
 		exportOnosAaaKPI(kpi)
 	default:
-		logger.Warn("Unexpected export. Should not come here")
+		logger.Warn("Unexpected export. Topic [%s] not supported. Should not come here", *topic)
 	}
 }
