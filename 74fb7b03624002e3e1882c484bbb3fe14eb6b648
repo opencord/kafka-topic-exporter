@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7731c12f_08664aaa",
+        "filename": "topic-exporter.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 1000582
+      },
+      "writtenOn": "2019-07-04T15:20:05Z",
+      "side": 1,
+      "message": "After the error is logged, the export function should not be called. The data inside kpi would not be integral in this case.",
+      "revId": "74fb7b03624002e3e1882c484bbb3fe14eb6b648",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
