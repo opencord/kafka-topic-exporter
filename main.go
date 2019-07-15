@@ -18,6 +18,7 @@ import (
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
 	"github.com/Shopify/sarama"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -66,8 +67,11 @@ func runServer(target TargetInfo) {
 		target.Port = 8080
 	}
 	logger.Debug("Starting HTTP Server on %d port", target.Port)
-	http.Handle("/metrics", prometheus.Handler())
-	http.ListenAndServe(":"+strconv.Itoa(target.Port), nil)
+	http.Handle("/metrics", promhttp.Handler())
+	err := http.ListenAndServe(":"+strconv.Itoa(target.Port), nil)
+	if err != nil {
+		logger.Error("HTTP Server Error: %s", err.Error())
+       }
 }
 
 func init() {
