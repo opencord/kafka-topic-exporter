@@ -540,6 +540,7 @@ func export(topic *string, data []byte) {
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
 			logger.Error("Invalid msg on voltha.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
 		}
 		exportVolthaKPI(kpi)
 	case "onos.kpis":
@@ -547,6 +548,7 @@ func export(topic *string, data []byte) {
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
 			logger.Error("Invalid msg on onos.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
 		}
 		exportOnosKPI(kpi)
 	case "importer.kpis":
@@ -554,6 +556,7 @@ func export(topic *string, data []byte) {
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
 			logger.Error("Invalid msg on importer.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
 		}
 		exportImporterKPI(kpi)
 	case "onos.aaa.stats.kpis":
@@ -561,6 +564,7 @@ func export(topic *string, data []byte) {
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
 			logger.Error("Invalid msg on onos.aaa.stats.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
 		}
 		exportOnosAaaKPI(kpi)
 	default:
