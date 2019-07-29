@@ -79,6 +79,12 @@ func init() {
 	prometheus.MustRegister(volthaTxErrorPacketsTotal)
 	prometheus.MustRegister(volthaRxErrorPacketsTotal)
 
+	prometheus.MustRegister(VolthaOnuLaserBiasCurrent)
+	prometheus.MustRegister(volthaOnuTemperature)
+	prometheus.MustRegister(VolthaOnuPowerFeedVoltage)
+	prometheus.MustRegister(VolthaOnuMeanOpticalLaunchPower)
+	prometheus.MustRegister(VolthaOnuReceivedOpticalPower)
+
 	prometheus.MustRegister(onosTxBytesTotal)
 	prometheus.MustRegister(onosRxBytesTotal)
 	prometheus.MustRegister(onosTxPacketsTotal)
