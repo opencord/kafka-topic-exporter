@@ -67,6 +67,47 @@ var (
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
 
+	// optical parameters
+	VolthaOnuLaserBiasCurrent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_onu_laser_bias_current",
+			Help: "ONU Laser bias current value",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaOnuTemperature = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_onu_temperature",
+			Help: "ONU temperature value",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	VolthaOnuPowerFeedVoltage = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_onu_power_feed_voltage",
+			Help: "ONU power feed voltage",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	VolthaOnuMeanOpticalLaunchPower = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_onu_mean_optical_launch_power",
+			Help: "ONU mean optical launch power",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	VolthaOnuReceivedOpticalPower = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_onu_received_optical_power",
+			Help: "ONU received optical power",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
 	// onos kpis
 	onosTxBytesTotal = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -292,6 +333,58 @@ func exportVolthaKPI(kpi VolthaKPI) {
 					data.Metadata.Title,
 				).Add(data.Metrics.Octets)
 			}
+
+		case "PON_Optical":
+			VolthaOnuLaserBiasCurrent.WithLabelValues(
+				data.Metadata.LogicalDeviceID,
+				data.Metadata.SerialNumber,
+				data.Metadata.DeviceID,
+				data.Metadata.Context.InterfaceID,
+				data.Metadata.Context.PonID,
+				data.Metadata.Context.PortNumber,
+				data.Metadata.Title,
+			).Set(data.Metrics.LaserBiasCurrent)
+
+			volthaOnuTemperature.WithLabelValues(
+				data.Metadata.LogicalDeviceID,
+				data.Metadata.SerialNumber,
+				data.Metadata.DeviceID,
+				data.Metadata.Context.InterfaceID,
+				data.Metadata.Context.PonID,
+				data.Metadata.Context.PortNumber,
+				data.Metadata.Title,
+			).Set(data.Metrics.Temperature)
+
+			VolthaOnuPowerFeedVoltage.WithLabelValues(
+				data.Metadata.LogicalDeviceID,
+				data.Metadata.SerialNumber,
+				data.Metadata.DeviceID,
+				data.Metadata.Context.InterfaceID,
+				data.Metadata.Context.PonID,
+				data.Metadata.Context.PortNumber,
+				data.Metadata.Title,
+			).Set(data.Metrics.PowerFeedVoltage)
+
+			VolthaOnuMeanOpticalLaunchPower.WithLabelValues(
+				data.Metadata.LogicalDeviceID,
+				data.Metadata.SerialNumber,
+				data.Metadata.DeviceID,
+				data.Metadata.Context.InterfaceID,
+				data.Metadata.Context.PonID,
+				data.Metadata.Context.PortNumber,
+				data.Metadata.Title,
+			).Set(data.Metrics.MeanOpticalLaunchPower)
+
+			VolthaOnuReceivedOpticalPower.WithLabelValues(
+				data.Metadata.LogicalDeviceID,
+				data.Metadata.SerialNumber,
+				data.Metadata.DeviceID,
+				data.Metadata.Context.InterfaceID,
+				data.Metadata.Context.PonID,
+				data.Metadata.Context.PortNumber,
+				data.Metadata.Title,
+			).Set(data.Metrics.ReceivedOpticalPower)
+
 
 		case "Ethernet_UNI_History":
 			// ONU. Do nothing.

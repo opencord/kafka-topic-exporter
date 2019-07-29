@@ -54,6 +54,12 @@ type Metrics struct {
 	RxBcastPackets     float64 `json:"rx_bcast_packets"`
 	RxMulticastPackets float64 `json:"rx_mcast_packets"`
 
+	LaserBiasCurrent   float64 `json:"laser_bias_current"`
+	Temperature        float64 `json:"temperature"`
+	PowerFeedVoltage   float64 `json:"power_feed_voltage"`
+	MeanOpticalLaunchPower float64 `json:"mean_optical_launch_power"`
+	ReceivedOpticalPower   float64 `json:"received_optical_power"`
+
 	// ONU Ethernet_Bridge_Port_history
 	Packets            float64 `json:"packets"`
 	Octets             float64 `json:"octets"`
