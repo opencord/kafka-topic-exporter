@@ -174,6 +174,41 @@ var (
 			Name: "onosaaa_request_re_tx",
 			Help: "Number of access request packets retransmitted to the server",
 		})
+	onosaaaRxEapolLogoff = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_eapol_Logoff",
+			Help: "Number of EAPOL logoff messages received resulting in disconnected state",
+		})
+	onosaaaTxEapolResIdentityMsg = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_eapol_Res_IdentityMsg",
+			Help: "Number of authenticating transitions due to EAP response or identity message",
+		})
+	onosaaaTxAuthSuccess = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_auth_Success",
+			Help: "Number of authenticated transitions due to successful authentication",
+		})
+	onosaaaTxAuthFailure = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_auth_Failure",
+			Help: "Number of transitions to held due to authentication failure",
+		})
+	onosaaaTxStartReq = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_start_Req",
+			Help: "Number of transitions to connecting due to start request",
+		})
+	onosaaaEapPktTxAuthChooseEap = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_eap_Pkt_tx_auth_choosing_Eap",
+			Help: "Number of EAP request packets sent due to the authenticator choosing the EAP method",
+		})
+	onosaaaTxRespnotNak = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_Resp_not_Nak",
+			Help: "Number of transitions to response (received response other that NAK)",
+		})
 )
 
 func exportVolthaKPI(kpi VolthaKPI) {
@@ -438,6 +473,20 @@ func exportOnosAaaKPI(kpi OnosAaaKPI) {
 	onosaaaRequestRttMillis.Set(kpi.RequestRttMillis)
 
 	onosaaaRequestReTx.Set(kpi.RequestReTx)
+
+	onosaaaRxEapolLogoff.Set(kpi.RxEapolLogoff)
+
+	onosaaaTxEapolResIdentityMsg.Set(kpi.TxEapolResIdentityMsg)
+
+	onosaaaTxAuthSuccess.Set(kpi.TxAuthSuccess)
+
+	onosaaaTxAuthFailure.Set(kpi.TxAuthFailure)
+
+	onosaaaTxStartReq.Set(kpi.TxStartReq)
+
+	onosaaaEapPktTxAuthChooseEap.Set(kpi.EapPktTxAuthChooseEap)
+
+	onosaaaTxRespnotNak.Set(kpi.TxResponseNotNak)
 }
 
 func export(topic *string, data []byte) {
