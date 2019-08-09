@@ -120,18 +120,25 @@ type ImporterKPI struct {
 }
 
 type OnosAaaKPI struct {
-	RxAcceptResponses    float64 `json:"acceptResponsesRx"`
-	RxRejectResponses    float64 `json:"rejectResponsesRx"`
-	RxChallengeResponses float64 `json:"challengeResponsesRx"`
-	TxAccessRequests     float64 `json:"accessRequestsTx"`
-	RxInvalidValidators  float64 `json:"invalidValidatorsRx"`
-	RxUnknownType        float64 `json:"unknownTypeRx"`
-	PendingRequests      float64 `json:"pendingRequests"`
-	RxDroppedResponses   float64 `json:"droppedResponsesRx"`
-	RxMalformedResponses float64 `json:"malformedResponsesRx"`
-	RxUnknownserver      float64 `json:"unknownServerRx"`
-	RequestRttMillis     float64 `json:"requestRttMillis"`
-	RequestReTx          float64 `json:"requestReTx"`
+	RxAcceptResponses     float64 `json:"acceptResponsesRx"`
+	RxRejectResponses     float64 `json:"rejectResponsesRx"`
+	RxChallengeResponses  float64 `json:"challengeResponsesRx"`
+	TxAccessRequests      float64 `json:"accessRequestsTx"`
+	RxInvalidValidators   float64 `json:"invalidValidatorsRx"`
+	RxUnknownType         float64 `json:"unknownTypeRx"`
+	PendingRequests       float64 `json:"pendingRequests"`
+	RxDroppedResponses    float64 `json:"droppedResponsesRx"`
+	RxMalformedResponses  float64 `json:"malformedResponsesRx"`
+	RxUnknownserver       float64 `json:"unknownServerRx"`
+	RequestRttMillis      float64 `json:"requestRttMillis"`
+	RequestReTx           float64 `json:"requestReTx"`
+	RxEapolLogoff         float64 `json:"eapolLogoffRx"`
+	TxEapolResIdentityMsg float64 `json:"eapolResIdentityMsgTrans"`
+	TxAuthSuccess         float64 `json:"eapolAuthSuccessTrans"`
+	TxAuthFailure         float64 `json:"eapolAuthFailureTrans"`
+	TxStartReq            float64 `json:"eapolStartReqTrans"`
+	EapPktTxAuthChooseEap float64 `json:"eapPktTxauthChooseEap"`
+	TxResponseNotNak      float64 `json:"eapolTransRespNotNak"`
 }
 
 type OnosPppoeSubscriberKPI struct {
