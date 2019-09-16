@@ -123,6 +123,16 @@ func init() {
 	prometheus.MustRegister(deviceTemperature)
 	prometheus.MustRegister(deviceTxPower)
 	prometheus.MustRegister(deviceVoltage)
+
+	prometheus.MustRegister(onosaaaEapolFramesTx)
+	prometheus.MustRegister(onosaaaAuthStateIdle)
+	prometheus.MustRegister(onosaaaRequestIdFramesTx)
+	prometheus.MustRegister(onosaaaRequestEapFramesTx)
+	prometheus.MustRegister(onosaaaInvalidPktType)
+	prometheus.MustRegister(onosaaaInvalidBodyLength)
+	prometheus.MustRegister(onosaaaValidEapolFramesRx)
+	prometheus.MustRegister(onosaaaPendingResSupplicant)
+	prometheus.MustRegister(onosaaaRxResIdEapFrames)
 }
 
 func loadConfigFile() Config {
