@@ -118,6 +118,16 @@ func init() {
 	prometheus.MustRegister(onosPppoeDownRxPackets)
 	prometheus.MustRegister(onosPppoeDownTxBytes)
 	prometheus.MustRegister(onosPppoeDownTxPackets)
+
+	prometheus.MustRegister(onosaaaEapolFramesTx)
+	prometheus.MustRegister(onosaaaAuthStateIdle)
+	prometheus.MustRegister(onosaaaRequestIdFramesTx)
+	prometheus.MustRegister(onosaaaRequestEapFramesTx)
+	prometheus.MustRegister(onosaaaInvalidPktType)
+	prometheus.MustRegister(onosaaaInvalidBodyLength)
+	prometheus.MustRegister(onosaaaValidEapolFramesRx)
+	prometheus.MustRegister(onosaaaPendingResSupplicant)
+	prometheus.MustRegister(onosaaaRxResIdEapFrames)
 }
 
 func loadConfigFile() Config {
