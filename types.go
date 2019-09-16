@@ -139,6 +139,15 @@ type OnosAaaKPI struct {
 	TxStartReq            float64 `json:"eapolStartReqTrans"`
 	EapPktTxAuthChooseEap float64 `json:"eapPktTxauthChooseEap"`
 	TxResponseNotNak      float64 `json:"eapolTransRespNotNak"`
+	EapolFramesTx        float64 `json:"eapolFramesTx"`
+	AuthStateIdle        float64 `json:"authStateIdle"`
+	RequestIdFramesTx    float64 `json:"requestIdFramesTx"`
+	RequestEapFramesTx   float64 `json:"requestEapFramesTx"`
+	InvalidPktType       float64 `json:"invalidPktType"`
+	InvalidBodyLength    float64 `json:"invalidBodyLength"`
+	ValidEapolFramesRx   float64 `json:"validEapolFramesRx"`
+	PendingResSupplicant float64 `json:"pendingResSupplicant"`
+	RxResIdEapFrames     float64 `json:"resIdEapFramesRx"`
 }
 
 type OnosPppoeSubscriberKPI struct {

@@ -338,6 +338,51 @@ var (
 		prometheus.GaugeOpts{
 			Name: "onosaaa_tx_Resp_not_Nak",
 			Help: "Number of transitions to response (received response other that NAK)",
+                })
+	onosaaaEapolFramesTx = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_eapol_frames_tx",
+			Help: "Number of EAPOL frames transmitted",
+		})
+	onosaaaAuthStateIdle = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_auth_state_idle",
+			Help: "Number of state machine status as Idle",
+		})
+	onosaaaRequestIdFramesTx = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_request_id_frames",
+			Help: "Number of request ID EAP frames transmitted",
+		})
+	onosaaaRequestEapFramesTx = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_tx_request_eap_frames",
+			Help: "Number of request EAP frames transmitted",
+		})
+	onosaaaInvalidPktType = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_invalid_pkt_type",
+			Help: "Number of EAPOL frames received with invalid frame(Packet) type",
+		})
+	onosaaaInvalidBodyLength = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_invalid_body_length",
+			Help: "Number of EAPOL frames received with invalid body length",
+		})
+	onosaaaValidEapolFramesRx = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_valid_eapol_frames",
+			Help: "Number of valid EAPOL frames received",
+		})
+	onosaaaPendingResSupplicant = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_pending_response_supplicant",
+			Help: "Number of request pending response from supplicant",
+		})
+	onosaaaRxResIdEapFrames = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "onosaaa_rx_res_id_eap_frames",
+			Help: "Number of response ID EAP frames received",
 		})
 )
 
@@ -670,6 +715,24 @@ func exportOnosAaaKPI(kpi OnosAaaKPI) {
 	onosaaaEapPktTxAuthChooseEap.Set(kpi.EapPktTxAuthChooseEap)
 
 	onosaaaTxRespnotNak.Set(kpi.TxResponseNotNak)
+
+	onosaaaEapolFramesTx.Set(kpi.EapolFramesTx)
+
+	onosaaaAuthStateIdle.Set(kpi.AuthStateIdle)
+
+	onosaaaRequestIdFramesTx.Set(kpi.RequestIdFramesTx)
+
+	onosaaaRequestEapFramesTx.Set(kpi.RequestEapFramesTx)
+
+	onosaaaInvalidPktType.Set(kpi.InvalidPktType)
+
+	onosaaaInvalidBodyLength.Set(kpi.InvalidBodyLength)
+
+	onosaaaValidEapolFramesRx.Set(kpi.ValidEapolFramesRx)
+
+	onosaaaPendingResSupplicant.Set(kpi.PendingResSupplicant)
+
+	onosaaaRxResIdEapFrames.Set(kpi.RxResIdEapFrames)
 }
 
 func exportOnosPppoeKPI(kpi OnosPppoeKPI) {
