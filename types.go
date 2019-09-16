@@ -129,4 +129,13 @@ type OnosAaaKPI struct {
 	RxUnknownserver      float64 `json:"unknownServerRx"`
 	RequestRttMillis     float64 `json:"requestRttMillis"`
 	RequestReTx          float64 `json:"requestReTx"`
+	EapolFramesTx        float64 `json:"eapolFramesTx"`
+	AuthStateIdle        float64 `json:"authStateIdle"`
+	RequestIdFramesTx    float64 `json:"requestIdFramesTx"`
+	RequestEapFramesTx   float64 `json:"requestEapFramesTx"`
+	InvalidPktType       float64 `json:"invalidPktType"`
+	InvalidBodyLength    float64 `json:"invalidBodyLength"`
+	ValidEapolFramesRx   float64 `json:"validEapolFramesRx"`
+	PendingResSupplicant float64 `json:"pendingResSupplicant"`
+	RxResIdEapFrames     float64 `json:"resIdEapFramesRx"`
 }
