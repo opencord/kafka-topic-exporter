@@ -16,8 +16,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
+	"strconv"
 )
 
 var (
@@ -215,6 +218,72 @@ var (
 			Name: "onosaaa_request_re_tx",
 			Help: "Number of access request packets retransmitted to the server",
 		})
+
+	// ONOS PPPoE kpis
+
+	onosPppoeUpTermBytes = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoeupTermBytes",
+			Help: "onosPppoeupTermBytes",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeUpTermPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoeupTermPackets",
+			Help: "onosPppoeupTermPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeUpDropBytes = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoeupDropBytes",
+			Help: "onosPppoeupDropBytes",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeUpDropPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoeupDropPackets",
+			Help: "onosPppoeupDropPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeUpControlPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoeupControlPackets",
+			Help: "onosPppoeupControlPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeDownRxBytes = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoedownRxBytes",
+			Help: "onosPppoedownRxBytes",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeDownRxPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoedownRxPackets",
+			Help: "onosPppoedownRxPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeDownTxBytes = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoedownTxBytes",
+			Help: "onosPppoedownTxBytes",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
+	onosPppoeDownTxPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosPppoedownTxPackets",
+			Help: "onosPppoedownTxPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "subscriber"},
+	)
 )
 
 func exportVolthaKPI(kpi VolthaKPI) {
@@ -385,7 +454,6 @@ func exportVolthaKPI(kpi VolthaKPI) {
 				data.Metadata.Title,
 			).Set(data.Metrics.ReceivedOpticalPower)
 
-
 		case "Ethernet_UNI_History":
 			// ONU. Do nothing.
 
@@ -533,6 +601,95 @@ func exportOnosAaaKPI(kpi OnosAaaKPI) {
 	onosaaaRequestReTx.Set(kpi.RequestReTx)
 }
 
+func exportOnosPppoeKPI(kpi OnosPppoeKPI) {
+	for _, s := range kpi.Subscribers {
+
+		subId := fmt.Sprintf("%s-%s", strconv.Itoa(s.S_tag), strconv.Itoa(s.C_tag))
+
+		logger.WithFields(log.Fields{
+			"Mac":        s.Mac,
+			"Ip":         s.Ip,
+			"SessionId":  strconv.Itoa(s.SessionId),
+			"S_tag":      strconv.Itoa(s.S_tag),
+			"C_tag":      strconv.Itoa(s.C_tag),
+			"Subscriber": subId,
+		}).Trace("Received OnosPppoeKPI message")
+
+		onosPppoeUpTermBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.UpTermBytes)
+		onosPppoeUpTermPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.UpTermPackets)
+		onosPppoeUpDropBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.UpDropBytes)
+		onosPppoeUpDropPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.UpDropPackets)
+		onosPppoeUpControlPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.UpControlPackets)
+		onosPppoeDownRxBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.DownRxBytes)
+		onosPppoeDownRxPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.DownRxPackets)
+		onosPppoeDownTxBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.DownTxBytes)
+		onosPppoeDownTxPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.S_tag),
+			strconv.Itoa(s.C_tag),
+			subId,
+		).Set(s.DownTxPackets)
+	}
+}
+
 func export(topic *string, data []byte) {
 	switch *topic {
 	case "voltha.kpis":
@@ -567,6 +724,14 @@ func export(topic *string, data []byte) {
 			break
 		}
 		exportOnosAaaKPI(kpi)
+	case "pppoe.stats":
+		kpi := OnosPppoeKPI{}
+		err := json.Unmarshal(data, &kpi)
+		if err != nil {
+			logger.Error("Invalid msg on pppoe.stats: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
+		}
+		exportOnosPppoeKPI(kpi)
 	default:
 		logger.Warn("Unexpected export. Topic [%s] not supported. Should not come here", *topic)
 	}
