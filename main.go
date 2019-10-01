@@ -108,6 +108,16 @@ func init() {
 	prometheus.MustRegister(onosaaaRxUnknownserver)
 	prometheus.MustRegister(onosaaaRequestRttMillis)
 	prometheus.MustRegister(onosaaaRequestReTx)
+
+	prometheus.MustRegister(onosPppoeUpTermBytes)
+	prometheus.MustRegister(onosPppoeUpTermPackets)
+	prometheus.MustRegister(onosPppoeUpDropBytes)
+	prometheus.MustRegister(onosPppoeUpDropPackets)
+	prometheus.MustRegister(onosPppoeUpControlPackets)
+	prometheus.MustRegister(onosPppoeDownRxBytes)
+	prometheus.MustRegister(onosPppoeDownRxPackets)
+	prometheus.MustRegister(onosPppoeDownTxBytes)
+	prometheus.MustRegister(onosPppoeDownTxPackets)
 }
 
 func loadConfigFile() Config {

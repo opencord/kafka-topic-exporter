@@ -16,28 +16,28 @@ package main
 
 // configuration
 type BrokerInfo struct {
-	Name			string `yaml: name`
-	Host			string `yaml: host`
-	Description		string `yaml: description`
-	Topics		  []string `yaml: topics`
+	Name        string   `yaml: name`
+	Host        string   `yaml: host`
+	Description string   `yaml: description`
+	Topics      []string `yaml: topics`
 }
 
 type LoggerInfo struct {
-	LogLevel		string `yaml: loglevel`
-	Host			string `yaml: host`
+	LogLevel string `yaml: loglevel`
+	Host     string `yaml: host`
 }
 
 type TargetInfo struct {
-	Type			string `yaml: type`
-	Name			string `yaml: name`
-	Port			int    `yaml: port`
-	Description		string `yaml: description`
+	Type        string `yaml: type`
+	Name        string `yaml: name`
+	Port        int    `yaml: port`
+	Description string `yaml: description`
 }
 
 type Config struct {
-	Broker		BrokerInfo `yaml: broker`
-	Logger		LoggerInfo `yaml: logger`
-	Target		TargetInfo `yaml: "target"`
+	Broker BrokerInfo `yaml: broker`
+	Logger LoggerInfo `yaml: logger`
+	Target TargetInfo `yaml: "target"`
 }
 
 // KPI Events format
@@ -54,15 +54,15 @@ type Metrics struct {
 	RxBcastPackets     float64 `json:"rx_bcast_packets"`
 	RxMulticastPackets float64 `json:"rx_mcast_packets"`
 
-	LaserBiasCurrent   float64 `json:"laser_bias_current"`
-	Temperature        float64 `json:"temperature"`
-	PowerFeedVoltage   float64 `json:"power_feed_voltage"`
+	LaserBiasCurrent       float64 `json:"laser_bias_current"`
+	Temperature            float64 `json:"temperature"`
+	PowerFeedVoltage       float64 `json:"power_feed_voltage"`
 	MeanOpticalLaunchPower float64 `json:"mean_optical_launch_power"`
 	ReceivedOpticalPower   float64 `json:"received_optical_power"`
 
 	// ONU Ethernet_Bridge_Port_history
-	Packets            float64 `json:"packets"`
-	Octets             float64 `json:"octets"`
+	Packets float64 `json:"packets"`
+	Octets  float64 `json:"octets"`
 }
 
 type Context struct {
@@ -71,9 +71,9 @@ type Context struct {
 	PortNumber  string `json:"port_no"`
 
 	// ONU Performance Metrics
-	ParentClassId string `json:"parent_class_id"`
+	ParentClassId  string `json:"parent_class_id"`
 	ParentEntityId string `json:"parent_entity_id"`
-	Upstream    string `json:"upstream"`
+	Upstream       string `json:"upstream"`
 }
 
 type Metadata struct {
@@ -112,7 +112,7 @@ type OnosKPI struct {
 }
 
 type ImporterKPI struct {
-	DeviceID string 	`json: "deviceId"`
+	DeviceID string `json: "deviceId"`
 	// TODO: add metrics data
 }
 
@@ -129,4 +129,27 @@ type OnosAaaKPI struct {
 	RxUnknownserver      float64 `json:"unknownServerRx"`
 	RequestRttMillis     float64 `json:"requestRttMillis"`
 	RequestReTx          float64 `json:"requestReTx"`
+}
+
+type OnosPppoeSubscriberKPI struct {
+	Mac              string `json:"mac"`
+	Ip               string `json:"ip"`
+	SessionId        int `json:"sessionId"`
+	STag             int `json:"sTag"`
+	CTag             int `json:"cTag"`
+	SerialNumber 	 string `json:"serialNumber"`
+	UpTermBytes      float64 `json:"upTermBytes"`
+	UpTermPackets    float64 `json:"upTermPackets"`
+	UpDropBytes      float64 `json:"upDropBytes"`
+	UpDropPackets    float64 `json:"upDropPackets"`
+	DownRxBytes      float64 `json:"downRxBytes"`
+	DownRxPackets    float64 `json:"downRxPackets"`
+	DownTxBytes      float64 `json:"downTxBytes"`
+	DownTxPackets    float64 `json:"downTxPackets"`
+	UpControlPackets float64 `json:"upControlPackets"`
+}
+
+type OnosPppoeKPI struct {
+	Subscribers []OnosPppoeSubscriberKPI `json:"subscribers"`
+	Timestamp   string                   `json:"timestamp"`
 }
