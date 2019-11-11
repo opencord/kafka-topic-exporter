@@ -20,6 +20,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -283,6 +284,26 @@ var (
 		},
 		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
 	)
+	deviceLaserBiasCurrent = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+	                Name: "device_laser_bias_current",
+			Help: "Device Laser Bias Current",
+		})
+	deviceTemperature = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "device_temperature",
+			Help: "Device Temperature",
+		})
+	deviceTxPower = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "device_tx_power",
+			Help: "Device Tx Power",
+		})
+	deviceVoltage = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "device_voltage",
+			Help: "Device Voltage",
+	})
 )
 
 func exportVolthaKPI(kpi VolthaKPI) {
@@ -569,7 +590,12 @@ func exportOnosKPI(kpi OnosKPI) {
 }
 
 func exportImporterKPI(kpi ImporterKPI) {
-	// TODO: add metrics for importer data
+	// TODO: add more metric data for importer data
+	deviceLaserBiasCurrent.Set(kpi.LaserBiasCurrent)
+	deviceTemperature.Set(kpi.Temperature)
+	deviceTxPower.Set(kpi.TxPower)
+	deviceVoltage.Set(kpi.Voltage)
+
 	logger.Info("To be implemented")
 }
 
@@ -707,9 +733,25 @@ func export(topic *string, data []byte) {
 		exportOnosKPI(kpi)
 	case "importer.kpis":
 		kpi := ImporterKPI{}
-		err := json.Unmarshal(data, &kpi)
+		strData := string(data)
+		idx := strings.Index(strData, "{")
+		strData = strData[idx:]
+
+		var m map[string]interface{}
+		err := json.Unmarshal([]byte(strData), &m)
 		if err != nil {
-			logger.Error("Invalid msg on importer.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			logger.Error("Invalid msg on importer.kpis: %s, Unprocessed Msg: %s", err.Error(), strData)
+			break
+		}
+		if val, ok := m["TransceiverStatistics"]; ok {
+			stats := val.(map[string]interface{})
+			//kpi.Timestamp = time.Now().UnixNano()
+			kpi.LaserBiasCurrent = stats["BiasCurrent"].(map[string]interface{})["Reading"].(float64)
+			kpi.Temperature = stats["Temperature"].(map[string]interface{})["Reading"].(float64)
+			kpi.TxPower = stats["TxPower"].(map[string]interface{})["Reading"].(float64)
+			kpi.Voltage = stats["Voltage"].(map[string]interface{})["Reading"].(float64)
+		} else {
+			logger.Error("TransceiverStatistics information missing, Unprocessed Msg: %s", strData)
 			break
 		}
 		exportImporterKPI(kpi)

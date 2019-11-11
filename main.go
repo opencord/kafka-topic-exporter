@@ -118,6 +118,11 @@ func init() {
 	prometheus.MustRegister(onosPppoeDownRxPackets)
 	prometheus.MustRegister(onosPppoeDownTxBytes)
 	prometheus.MustRegister(onosPppoeDownTxPackets)
+
+	prometheus.MustRegister(deviceLaserBiasCurrent)
+	prometheus.MustRegister(deviceTemperature)
+	prometheus.MustRegister(deviceTxPower)
+	prometheus.MustRegister(deviceVoltage)
 }
 
 func loadConfigFile() Config {
