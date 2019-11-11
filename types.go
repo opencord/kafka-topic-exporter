@@ -112,8 +112,11 @@ type OnosKPI struct {
 }
 
 type ImporterKPI struct {
-	DeviceID string `json: "deviceId"`
-	// TODO: add metrics data
+        Timestamp           int64
+        LaserBiasCurrent    float64
+        Temperature         float64
+        TxPower             float64
+        Voltage             float64
 }
 
 type OnosAaaKPI struct {
