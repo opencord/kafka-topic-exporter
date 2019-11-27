@@ -112,7 +112,7 @@ type OnosKPI struct {
 }
 
 type ImporterKPI struct {
-	Timestamp        int64
+	PortId           string
 	LaserBiasCurrent float64
 	Temperature      float64
 	TxPower          float64
@@ -150,15 +150,14 @@ type OnosAaaKPI struct {
 	RxResIdEapFrames      float64 `json:"resIdEapFramesRx"`
 }
 
-
 type OnosBngKPI struct {
-	Mac             string  `json:"macAddress"`
-	Ip              string  `json:"ipAddress"`
-	PppoeSessionId  int     `json:"pppoeSessionId"`
-	AttachmentType  string  `json:"attachmentType"`
-	STag            int     `json:"sTag"`
-	CTag            int     `json:"cTag"`
-	OnuSerialNumber string  `json:"onuSerialNumber"`
+	Mac             string   `json:"macAddress"`
+	Ip              string   `json:"ipAddress"`
+	PppoeSessionId  int      `json:"pppoeSessionId"`
+	AttachmentType  string   `json:"attachmentType"`
+	STag            int      `json:"sTag"`
+	CTag            int      `json:"cTag"`
+	OnuSerialNumber string   `json:"onuSerialNumber"`
 	DeviceId        string   `json:"deviceId"`
 	PortNumber      string   `json:"portNumber"`
 	UpTxBytes       *float64 `json:"upTxBytes,omitempty"`
@@ -174,5 +173,5 @@ type OnosBngKPI struct {
 	DownDropBytes   *float64 `json:"downDropBytes,omitempty"`
 	DownDropPackets *float64 `json:"downDropPackets,omitempty"`
 	ControlPackets  *float64 `json:"controlPackets,omitempty"`
-	Timestamp       string  `json:"timestamp"`
+	Timestamp       string   `json:"timestamp"`
 }
