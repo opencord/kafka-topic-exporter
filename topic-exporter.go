@@ -21,6 +21,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var (
@@ -284,10 +285,20 @@ var (
 		},
 		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
 	)
+	deviceKpiTimestamp = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "device_kpi_timestamp",
+			Help: "Device Kpi Timestamp",
+		})
 	deviceLaserBiasCurrent = prometheus.NewGauge(
 		prometheus.GaugeOpts{
-	                Name: "device_laser_bias_current",
+			Name: "device_laser_bias_current",
 			Help: "Device Laser Bias Current",
+		})
+	devicePortId = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "device_port_id",
+			Help: "Device Port Id",
 		})
 	deviceTemperature = prometheus.NewGauge(
 		prometheus.GaugeOpts{
@@ -625,7 +636,9 @@ func exportOnosKPI(kpi OnosKPI) {
 }
 
 func exportImporterKPI(kpi ImporterKPI) {
+	deviceKpiTimestamp.Set(float64(time.Now().UnixNano()) / float64(time.Second))
 	deviceLaserBiasCurrent.Set(kpi.LaserBiasCurrent)
+	devicePortId.Set(kpi.PortId)
 	deviceTemperature.Set(kpi.Temperature)
 	deviceTxPower.Set(kpi.TxPower)
 	deviceVoltage.Set(kpi.Voltage)
@@ -802,6 +815,7 @@ func export(topic *string, data []byte) {
 			logger.Debug("Unprocessed Msg: %s", strData)
 			break
 		}
+		kpi.PortId = m["Id"].(float64)
 		exportImporterKPI(kpi)
 	case "onos.aaa.stats.kpis":
 		kpi := OnosAaaKPI{}

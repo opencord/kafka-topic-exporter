@@ -114,6 +114,7 @@ type OnosKPI struct {
 type ImporterKPI struct {
         Timestamp           int64
         LaserBiasCurrent    float64
+        PortId              float64
         Temperature         float64
         TxPower             float64
         Voltage             float64
