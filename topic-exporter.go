@@ -322,27 +322,35 @@ var (
 		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
 
-
-	deviceLaserBiasCurrent = prometheus.NewGauge(
+	deviceLaserBiasCurrent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "device_laser_bias_current",
 			Help: "Device Laser Bias Current",
-		})
-	deviceTemperature = prometheus.NewGauge(
+		},
+		[]string{"port_id"},
+	)
+	deviceTemperature = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "device_temperature",
 			Help: "Device Temperature",
-		})
-	deviceTxPower = prometheus.NewGauge(
+		},
+		[]string{"port_id"},
+	)
+	deviceTxPower = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "device_tx_power",
 			Help: "Device Tx Power",
-		})
-	deviceVoltage = prometheus.NewGauge(
+		},
+		[]string{"port_id"},
+	)
+	deviceVoltage = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "device_voltage",
 			Help: "Device Voltage",
-		})
+		},
+		[]string{"port_id"},
+	)
+
 	onosaaaRxEapolLogoff = prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "onosaaa_rx_eapol_Logoff",
@@ -709,10 +717,18 @@ func exportOnosKPI(kpi OnosKPI) {
 }
 
 func exportImporterKPI(kpi ImporterKPI) {
-	deviceLaserBiasCurrent.Set(kpi.LaserBiasCurrent)
-	deviceTemperature.Set(kpi.Temperature)
-	deviceTxPower.Set(kpi.TxPower)
-	deviceVoltage.Set(kpi.Voltage)
+	deviceLaserBiasCurrent.WithLabelValues(
+		kpi.PortId,
+	).Set(kpi.LaserBiasCurrent)
+	deviceTemperature.WithLabelValues(
+		kpi.PortId,
+	).Set(kpi.Temperature)
+	deviceTxPower.WithLabelValues(
+		kpi.PortId,
+	).Set(kpi.TxPower)
+	deviceVoltage.WithLabelValues(
+		kpi.PortId,
+	).Set(kpi.Voltage)
 }
 
 func exportOnosAaaKPI(kpi OnosAaaKPI) {
@@ -785,7 +801,7 @@ func exportOnosBngKPI(kpi OnosBngKPI) {
 		"onuSerialNumber": kpi.OnuSerialNumber,
 	}).Trace("Received OnosBngKPI message")
 
-    if kpi.UpTxBytes != nil {
+	if kpi.UpTxBytes != nil {
 		onosBngUpTxBytes.WithLabelValues(
 			kpi.Mac,
 			kpi.Ip,
@@ -953,7 +969,7 @@ func export(topic *string, data []byte) {
 			break
 		}
 		exportOnosKPI(kpi)
-	case "importer.kpis":
+	case "importer":
 		kpi := ImporterKPI{}
 		strData := string(data)
 		idx := strings.Index(strData, "{")
@@ -962,22 +978,22 @@ func export(topic *string, data []byte) {
 		var m map[string]interface{}
 		err := json.Unmarshal([]byte(strData), &m)
 		if err != nil {
-			logger.Error("Invalid msg on importer.kpis: %s", err.Error())
+			logger.Error("Invalid msg on importer: %s", err.Error())
 			logger.Debug("Unprocessed Msg: %s", strData)
 			break
 		}
 		if val, ok := m["TransceiverStatistics"]; ok {
 			stats := val.(map[string]interface{})
-			//kpi.Timestamp = time.Now().UnixNano()
 			kpi.LaserBiasCurrent = stats["BiasCurrent"].(map[string]interface{})["Reading"].(float64)
 			kpi.Temperature = stats["Temperature"].(map[string]interface{})["Reading"].(float64)
 			kpi.TxPower = stats["TxPower"].(map[string]interface{})["Reading"].(float64)
 			kpi.Voltage = stats["Voltage"].(map[string]interface{})["Reading"].(float64)
 		} else {
-			logger.Error("Optical stats (TransceiverStatistics) information missing [topic=importer.kpis")
+			logger.Error("Optical stats (TransceiverStatistics) information missing [topic=importer")
 			logger.Debug("Unprocessed Msg: %s", strData)
 			break
 		}
+		kpi.PortId = m["Id"].(string)
 		exportImporterKPI(kpi)
 	case "onos.aaa.stats.kpis":
 		kpi := OnosAaaKPI{}
