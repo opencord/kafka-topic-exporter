@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e0ae73f_5c4f9456",
+        "filename": "topic-exporter.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-12-03T01:37:50Z",
+      "side": 1,
+      "message": "Looking at prometheus documentation, I think it generates a timestamp on each metric automatically, so I don\u0027t think we need to do it ourselves.",
+      "range": {
+        "startLine": 288,
+        "startChar": 1,
+        "endLine": 288,
+        "endChar": 42
+      },
+      "revId": "1f196f20bca76f38cd03948127f3680aea1e09da",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb471d9c_9cacc248",
+        "filename": "topic-exporter.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-12-03T01:37:50Z",
+      "side": 1,
+      "message": "Rather than implement the port id as a separate metric, I think it would be more appropriate to use a Prometheus label: https://prometheus.io/docs/practices/naming/#labels. Some of the other metrics in the exporter use labels (see \"withLabelValues\") so there should be a working example.\n\nWe should probably label the metrics with both device id and port id.",
+      "range": {
+        "startLine": 298,
+        "startChar": 1,
+        "endLine": 298,
+        "endChar": 36
+      },
+      "revId": "1f196f20bca76f38cd03948127f3680aea1e09da",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
