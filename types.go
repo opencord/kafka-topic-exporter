@@ -112,11 +112,11 @@ type OnosKPI struct {
 }
 
 type ImporterKPI struct {
-        Timestamp           int64
-        LaserBiasCurrent    float64
-        Temperature         float64
-        TxPower             float64
-        Voltage             float64
+	Timestamp        int64
+	LaserBiasCurrent float64
+	Temperature      float64
+	TxPower          float64
+	Voltage          float64
 }
 
 type OnosAaaKPI struct {
@@ -139,36 +139,38 @@ type OnosAaaKPI struct {
 	TxStartReq            float64 `json:"eapolStartReqTrans"`
 	EapPktTxAuthChooseEap float64 `json:"eapPktTxauthChooseEap"`
 	TxResponseNotNak      float64 `json:"eapolTransRespNotNak"`
-	EapolFramesTx        float64 `json:"eapolFramesTx"`
-	AuthStateIdle        float64 `json:"authStateIdle"`
-	RequestIdFramesTx    float64 `json:"requestIdFramesTx"`
-	RequestEapFramesTx   float64 `json:"requestEapFramesTx"`
-	InvalidPktType       float64 `json:"invalidPktType"`
-	InvalidBodyLength    float64 `json:"invalidBodyLength"`
-	ValidEapolFramesRx   float64 `json:"validEapolFramesRx"`
-	PendingResSupplicant float64 `json:"pendingResSupplicant"`
-	RxResIdEapFrames     float64 `json:"resIdEapFramesRx"`
+	EapolFramesTx         float64 `json:"eapolFramesTx"`
+	AuthStateIdle         float64 `json:"authStateIdle"`
+	RequestIdFramesTx     float64 `json:"requestIdFramesTx"`
+	RequestEapFramesTx    float64 `json:"requestEapFramesTx"`
+	InvalidPktType        float64 `json:"invalidPktType"`
+	InvalidBodyLength     float64 `json:"invalidBodyLength"`
+	ValidEapolFramesRx    float64 `json:"validEapolFramesRx"`
+	PendingResSupplicant  float64 `json:"pendingResSupplicant"`
+	RxResIdEapFrames      float64 `json:"resIdEapFramesRx"`
 }
 
-type OnosPppoeSubscriberKPI struct {
-	Mac              string `json:"mac"`
-	Ip               string `json:"ip"`
-	SessionId        int `json:"sessionId"`
-	STag             int `json:"sTag"`
-	CTag             int `json:"cTag"`
-	SerialNumber 	 string `json:"serialNumber"`
-	UpTermBytes      float64 `json:"upTermBytes"`
-	UpTermPackets    float64 `json:"upTermPackets"`
-	UpDropBytes      float64 `json:"upDropBytes"`
-	UpDropPackets    float64 `json:"upDropPackets"`
-	DownRxBytes      float64 `json:"downRxBytes"`
-	DownRxPackets    float64 `json:"downRxPackets"`
-	DownTxBytes      float64 `json:"downTxBytes"`
-	DownTxPackets    float64 `json:"downTxPackets"`
-	UpControlPackets float64 `json:"upControlPackets"`
-}
 
-type OnosPppoeKPI struct {
-	Subscribers []OnosPppoeSubscriberKPI `json:"subscribers"`
-	Timestamp   string                   `json:"timestamp"`
+type OnosBngKPI struct {
+	Mac             string  `json:"macAddress"`
+	Ip              string  `json:"ipAddress"`
+	PppoeSessionId  int     `json:"pppoeSessionId"`
+	AttachmentType  string  `json:"attachmentType"`
+	STag            int     `json:"sTag"`
+	CTag            int     `json:"cTag"`
+	OnuSerialNumber string  `json:"onuSerialNumber"`
+	UpTxBytes       float64 `json:"upTxBytes"`
+	UpTxPackets     float64 `json:"upTxPackets"`
+	UpRxBytes       float64 `json:"upRxBytes"`
+	UpRxPackets     float64 `json:"upRxPackets"`
+	UpDropBytes     float64 `json:"upDropBytes"`
+	UpDropPackets   float64 `json:"upDropPackets"`
+	DownRxBytes     float64 `json:"downRxBytes"`
+	DownRxPackets   float64 `json:"downRxPackets"`
+	DownTxBytes     float64 `json:"downTxBytes"`
+	DownTxPackets   float64 `json:"downTxPackets"`
+	DownDropBytes   float64 `json:"downDropBytes"`
+	DownDropPackets float64 `json:"downDropPackets"`
+	ControlPackets  float64 `json:"controlPackets"`
+	Timestamp       string  `json:"timestamp"`
 }
