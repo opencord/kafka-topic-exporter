@@ -219,74 +219,113 @@ var (
 			Help: "Number of access request packets retransmitted to the server",
 		})
 
-	// ONOS PPPoE kpis
+	// ONOS BNG kpis
 
-	onosPppoeUpTermBytes = prometheus.NewGaugeVec(
+	// --------------------- BNG UPSTREAM STATISTICS -----------------------------------------
+	onosBngUpTxBytes = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoeupTermBytes",
-			Help: "onosPppoeupTermBytes",
+			Name: "onosBngUpTxBytes",
+			Help: "onosBngUpTxBytes",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeUpTermPackets = prometheus.NewGaugeVec(
+	onosBngUpTxPackets = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoeupTermPackets",
-			Help: "onosPppoeupTermPackets",
+			Name: "onosBngUpTxPackets",
+			Help: "onosBngUpTxPackets",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeUpDropBytes = prometheus.NewGaugeVec(
+
+	onosBngUpRxBytes = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoeupDropBytes",
-			Help: "onosPppoeupDropBytes",
+			Name: "onosBngUpRxBytes",
+			Help: "onosBngUpRxBytes",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeUpDropPackets = prometheus.NewGaugeVec(
+
+	onosBngUpRxPackets = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoeupDropPackets",
-			Help: "onosPppoeupDropPackets",
+			Name: "onosBngUpRxPackets",
+			Help: "onosBngUpRxPackets",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeUpControlPackets = prometheus.NewGaugeVec(
+	onosBngUpDropBytes = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoeupControlPackets",
-			Help: "onosPppoeupControlPackets",
+			Name: "onosBngUpDropBytes",
+			Help: "onosBngUpDropBytes",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeDownRxBytes = prometheus.NewGaugeVec(
+	onosBngUpDropPackets = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoedownRxBytes",
-			Help: "onosPppoedownRxBytes",
+			Name: "onosBngUpDropPackets",
+			Help: "onosBngUpDropPackets",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeDownRxPackets = prometheus.NewGaugeVec(
+
+	// --------------------- BNG CONTROL STATISTICS ------------------------------------------
+	onosBngControlPackets = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoedownRxPackets",
-			Help: "onosPppoedownRxPackets",
+			Name: "onosBngControlPackets",
+			Help: "onosBngControlPackets",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeDownTxBytes = prometheus.NewGaugeVec(
+
+	// -------------------- BNG DOWNSTREAM STATISTICS ----------------------------------------
+	onosBngDownTxBytes = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoedownTxBytes",
-			Help: "onosPppoedownTxBytes",
+			Name: "onosBngDownTxBytes",
+			Help: "onosBngDownTxBytes",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-	onosPppoeDownTxPackets = prometheus.NewGaugeVec(
+	onosBngDownTxPackets = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "onosPppoedownTxPackets",
-			Help: "onosPppoedownTxPackets",
+			Name: "onosBngDownTxPackets",
+			Help: "onosBngDownTxPackets",
 		},
-		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial"},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
+
+	onosBngDownRxBytes = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosBngDownRxBytes",
+			Help: "onosBngDownRxBytes",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
+	)
+	onosBngDownRxPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosBngDownRxPackets",
+			Help: "onosBngDownRxPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
+	)
+
+	onosBngDownDropBytes = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosBngDownDropBytes",
+			Help: "onosBngDownDropBytes",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
+	)
+	onosBngDownDropPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "onosBngDownDropPackets",
+			Help: "onosBngDownDropPackets",
+		},
+		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
+	)
+
+
 	deviceLaserBiasCurrent = prometheus.NewGauge(
 		prometheus.GaugeOpts{
-	                Name: "device_laser_bias_current",
+			Name: "device_laser_bias_current",
 			Help: "Device Laser Bias Current",
 		})
 	deviceTemperature = prometheus.NewGauge(
@@ -303,7 +342,7 @@ var (
 		prometheus.GaugeOpts{
 			Name: "device_voltage",
 			Help: "Device Voltage",
-	})
+		})
 	onosaaaRxEapolLogoff = prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "onosaaa_rx_eapol_Logoff",
@@ -338,7 +377,7 @@ var (
 		prometheus.GaugeOpts{
 			Name: "onosaaa_tx_Resp_not_Nak",
 			Help: "Number of transitions to response (received response other that NAK)",
-                })
+		})
 	onosaaaEapolFramesTx = prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "onosaaa_eapol_frames_tx",
@@ -735,90 +774,141 @@ func exportOnosAaaKPI(kpi OnosAaaKPI) {
 	onosaaaRxResIdEapFrames.Set(kpi.RxResIdEapFrames)
 }
 
-func exportOnosPppoeKPI(kpi OnosPppoeKPI) {
+func exportOnosBngKPI(kpi OnosBngKPI) {
 	for _, s := range kpi.Subscribers {
 
 		logger.WithFields(log.Fields{
-			"Mac":        s.Mac,
-			"Ip":         s.Ip,
-			"SessionId":  strconv.Itoa(s.SessionId),
-			"STag":       strconv.Itoa(s.STag),
-			"CTag":       strconv.Itoa(s.CTag),
-			"onuSerialNumber": s.SerialNumber,
-		}).Trace("Received OnosPppoeKPI message")
+			"Mac":             s.Mac,
+			"Ip":              s.Ip,
+			"PppoeSessionId":  strconv.Itoa(s.PppoeSessionId),
+			"AttachmentType":  s.AttachmentType,
+			"STag":            strconv.Itoa(s.STag),
+			"CTag":            strconv.Itoa(s.CTag),
+			"onuSerialNumber": s.OnuSerialNumber,
+		}).Trace("Received OnosBngKPI message")
 
-		onosPppoeUpTermBytes.WithLabelValues(
+		onosBngUpTxBytes.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
-		).Set(s.UpTermBytes)
-		onosPppoeUpTermPackets.WithLabelValues(
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.UpTxBytes)
+		onosBngUpTxPackets.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
-		).Set(s.UpTermPackets)
-		onosPppoeUpDropBytes.WithLabelValues(
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.UpTxPackets)
+
+		onosBngUpRxBytes.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.UpRxBytes)
+		onosBngUpRxPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.PppoeSessionId),
+			strconv.Itoa(s.STag),
+			strconv.Itoa(s.CTag),
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.UpRxPackets)
+
+		onosBngUpDropBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.PppoeSessionId),
+			strconv.Itoa(s.STag),
+			strconv.Itoa(s.CTag),
+			s.OnuSerialNumber,
+			s.AttachmentType,
 		).Set(s.UpDropBytes)
-		onosPppoeUpDropPackets.WithLabelValues(
+		onosBngUpDropPackets.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
+			s.OnuSerialNumber,
+			s.AttachmentType,
 		).Set(s.UpDropPackets)
-		onosPppoeUpControlPackets.WithLabelValues(
+
+		onosBngControlPackets.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
-		).Set(s.UpControlPackets)
-		onosPppoeDownRxBytes.WithLabelValues(
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.ControlPackets)
+
+		onosBngDownTxBytes.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
-		).Set(s.DownRxBytes)
-		onosPppoeDownRxPackets.WithLabelValues(
-			s.Mac,
-			s.Ip,
-			strconv.Itoa(s.SessionId),
-			strconv.Itoa(s.STag),
-			strconv.Itoa(s.CTag),
-			s.SerialNumber,
-		).Set(s.DownRxPackets)
-		onosPppoeDownTxBytes.WithLabelValues(
-			s.Mac,
-			s.Ip,
-			strconv.Itoa(s.SessionId),
-			strconv.Itoa(s.STag),
-			strconv.Itoa(s.CTag),
-			s.SerialNumber,
+			s.OnuSerialNumber,
 		).Set(s.DownTxBytes)
-		onosPppoeDownTxPackets.WithLabelValues(
+		onosBngDownTxPackets.WithLabelValues(
 			s.Mac,
 			s.Ip,
-			strconv.Itoa(s.SessionId),
+			strconv.Itoa(s.PppoeSessionId),
 			strconv.Itoa(s.STag),
 			strconv.Itoa(s.CTag),
-			s.SerialNumber,
+			s.OnuSerialNumber,
+			s.AttachmentType,
 		).Set(s.DownTxPackets)
+
+		onosBngDownRxBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.PppoeSessionId),
+			strconv.Itoa(s.STag),
+			strconv.Itoa(s.CTag),
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.DownRxBytes)
+		onosBngDownRxPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.PppoeSessionId),
+			strconv.Itoa(s.STag),
+			strconv.Itoa(s.CTag),
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.DownRxPackets)
+
+		onosBngDownDropBytes.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.PppoeSessionId),
+			strconv.Itoa(s.STag),
+			strconv.Itoa(s.CTag),
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.DownDropBytes)
+		onosBngDownDropPackets.WithLabelValues(
+			s.Mac,
+			s.Ip,
+			strconv.Itoa(s.PppoeSessionId),
+			strconv.Itoa(s.STag),
+			strconv.Itoa(s.CTag),
+			s.OnuSerialNumber,
+			s.AttachmentType,
+		).Set(s.DownDropPackets)
 	}
 }
 
@@ -874,14 +964,14 @@ func export(topic *string, data []byte) {
 			break
 		}
 		exportOnosAaaKPI(kpi)
-	case "pppoe.stats":
-		kpi := OnosPppoeKPI{}
+	case "bng.stats":
+		kpi := OnosBngKPI{}
 		err := json.Unmarshal(data, &kpi)
 		if err != nil {
-			logger.Error("Invalid msg on pppoe.stats: %s, Unprocessed Msg: %s", err.Error(), string(data))
+			logger.Error("Invalid msg on bng.stats: %s, Unprocessed Msg: %s", err.Error(), string(data))
 			break
 		}
-		exportOnosPppoeKPI(kpi)
+		exportOnosBngKPI(kpi)
 	default:
 		logger.Warn("Unexpected export. Topic [%s] not supported. Should not come here", *topic)
 	}

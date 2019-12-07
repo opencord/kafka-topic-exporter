@@ -150,25 +150,30 @@ type OnosAaaKPI struct {
 	RxResIdEapFrames     float64 `json:"resIdEapFramesRx"`
 }
 
-type OnosPppoeSubscriberKPI struct {
-	Mac              string `json:"mac"`
-	Ip               string `json:"ip"`
-	SessionId        int `json:"sessionId"`
-	STag             int `json:"sTag"`
-	CTag             int `json:"cTag"`
-	SerialNumber 	 string `json:"serialNumber"`
-	UpTermBytes      float64 `json:"upTermBytes"`
-	UpTermPackets    float64 `json:"upTermPackets"`
-	UpDropBytes      float64 `json:"upDropBytes"`
-	UpDropPackets    float64 `json:"upDropPackets"`
-	DownRxBytes      float64 `json:"downRxBytes"`
-	DownRxPackets    float64 `json:"downRxPackets"`
-	DownTxBytes      float64 `json:"downTxBytes"`
-	DownTxPackets    float64 `json:"downTxPackets"`
-	UpControlPackets float64 `json:"upControlPackets"`
+type OnosAttachmentKPI struct {
+	Mac             string  `json:"macAddress"`
+	Ip              string  `json:"ipAddress"`
+	PppoeSessionId  int     `json:"pppoeSessionId"`
+	AttachmentType  string  `json:"attachmentType"`
+	STag            int     `json:"sTag"`
+	CTag            int     `json:"cTag"`
+	OnuSerialNumber string  `json:"onuSerialNumber"`
+	UpTxBytes       float64 `json:"upTxBytes"`
+	UpTxPackets     float64 `json:"upTxPackets"`
+	UpRxBytes       float64 `json:"upRxBytes"`
+	UpRxPackets     float64 `json:"upRxPackets"`
+	UpDropBytes     float64 `json:"upDropBytes"`
+	UpDropPackets   float64 `json:"upDropPackets"`
+	DownRxBytes     float64 `json:"downRxBytes"`
+	DownRxPackets   float64 `json:"downRxPackets"`
+	DownTxBytes     float64 `json:"downTxBytes"`
+	DownTxPackets   float64 `json:"downTxPackets"`
+	DownDropBytes   float64 `json:"downDropBytes"`
+	DownDropPackets float64 `json:"downDropPackets"`
+	ControlPackets  float64 `json:"controlPackets"`
 }
 
-type OnosPppoeKPI struct {
-	Subscribers []OnosPppoeSubscriberKPI `json:"subscribers"`
-	Timestamp   string                   `json:"timestamp"`
+type OnosBngKPI struct {
+	Subscribers []OnosAttachmentKPI `json:"attachments"`
+	Timestamp   string              `json:"timestamp"`
 }
