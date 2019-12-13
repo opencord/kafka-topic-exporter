@@ -119,9 +119,7 @@ func init() {
 	prometheus.MustRegister(onosPppoeDownTxBytes)
 	prometheus.MustRegister(onosPppoeDownTxPackets)
 
-	prometheus.MustRegister(deviceKpiTimestamp)
 	prometheus.MustRegister(deviceLaserBiasCurrent)
-	prometheus.MustRegister(devicePortId)
 	prometheus.MustRegister(deviceTemperature)
 	prometheus.MustRegister(deviceTxPower)
 	prometheus.MustRegister(deviceVoltage)
