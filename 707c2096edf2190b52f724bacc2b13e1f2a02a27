@@ -1,0 +1,8 @@
+Code-Review+1: Carmelo Cascone <carmelo@opennetworking.org>
+Code-Review+2: Matteo Scandolo <teo@opennetworking.org>
+Verified+1: Matteo Scandolo <teo@opennetworking.org>
+Submitted-by: Matteo Scandolo <teo@opennetworking.org>
+Submitted-at: Thu, 16 Jan 2020 02:16:20 +0000
+Reviewed-on: https://gerrit.opencord.org/16653
+Project: kafka-topic-exporter
+Branch: refs/heads/master
