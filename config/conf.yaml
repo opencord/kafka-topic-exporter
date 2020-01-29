@@ -7,7 +7,7 @@ broker:
     - voltha.kpis
     - onos.kpis
     - onos.aaa.stats.kpis
-    - pppoe.stats
+    - bng.stats
 logger:
   loglevel: debug
   host: cord-kafka.default.svc.cluster.local:9092

@@ -32,7 +32,8 @@ DOCKER_LABEL_VCS_REF     ?= $(shell git diff-index --quiet HEAD -- && git rev-pa
 DOCKER_LABEL_COMMIT_DATE ?= $(shell git diff-index --quiet HEAD -- && git show -s --format=%cd --date=iso-strict HEAD || echo "unknown" )
 DOCKER_LABEL_BUILD_DATE  ?= $(shell date -u "+%Y-%m-%dT%H:%M:%SZ")
 
-all: test
+all: test docker-build
+
 docker-build:
 	docker build $(DOCKER_BUILD_ARGS) \
 	-t ${DOCKER_IMAGENAME} \
@@ -42,10 +43,12 @@ docker-build:
 	--build-arg org_label_schema_build_date="${DOCKER_LABEL_BUILD_DATE}" \
 	--build-arg org_opencord_vcs_commit_date="${DOCKER_LABEL_COMMIT_DATE}" \
 	-f Dockerfile .
+
 docker-push:
 	docker push ${DOCKER_IMAGENAME}
 
-test: docker-build
+test:
+	@echo "No tests available"
 
 clean:
 	@echo "No cleanup available"
