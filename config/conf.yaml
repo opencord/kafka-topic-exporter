@@ -8,7 +8,7 @@ broker:
     - onos.kpis
     - onos.aaa.stats.kpis
     - bng.stats
-    - voltha.kpis
+    - voltha.events
 logger:
   loglevel: debug
   host: cord-kafka.default.svc.cluster.local:9092
