@@ -66,12 +66,20 @@
   revision = "f62e125fcbfec116f56051e523699d5cce1d33f8"
 
 [[projects]]
-  digest = "1:573ca21d3669500ff845bdebee890eb7fc7f0f50c59f2132f2a0c6b03d85086a"
+  digest = "1:e990969aa1e50a90b32339bde4ba5bea3f81e8da8c15f20f62786c4dfb8ae45b"
   name = "github.com/golang/protobuf"
-  packages = ["proto"]
+  packages = [
+    "proto",
+    "protoc-gen-go/descriptor",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/empty",
+    "ptypes/timestamp",
+  ]
   pruneopts = "UT"
-  revision = "6c65a5562fc06764971b7c5d05c76c75e84bdbf7"
-  version = "v1.3.2"
+  revision = "1b794fe86dd6a0c7c52ae69b5c9cb0aeedc52afa"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:e4f5819333ac698d294fe04dbf640f84719658d5c7ce195b10060cc37292ce79"
@@ -117,6 +125,19 @@
   version = "v1.0.1"
 
 [[projects]]
+  digest = "1:c2b2d407417b550f4e45ae161bce8cc511f275d3af400d13ce1df9679755cec7"
+  name = "github.com/opencord/voltha-protos"
+  packages = [
+    "go/common",
+    "go/omci",
+    "go/openflow_13",
+    "go/voltha",
+  ]
+  pruneopts = "UT"
+  revision = "b6b797cceae987556bc705acc6273b1c7e43ce05"
+  version = "v1.0.3"
+
+[[projects]]
   digest = "1:f690a0a27cefae695fa9587aa3ed23652e593be1d98b35f8184d10bccec30444"
   name = "github.com/pierrec/lz4"
   packages = [
@@ -128,7 +149,7 @@
   version = "v2.2.4"
 
 [[projects]]
-  digest = "1:eb04f69c8991e52eff33c428bd729e04208bf03235be88e4df0d88497c6861b9"
+  digest = "1:e89f2cdede55684adbe44b5566f55838ad2aee1dff348d14b73ccf733607b671"
   name = "github.com/prometheus/client_golang"
   packages = [
     "prometheus",
@@ -136,8 +157,8 @@
     "prometheus/promhttp",
   ]
   pruneopts = "UT"
-  revision = "4ab88e80c249ed361d3299e2930427d9ac43ef8d"
-  version = "v1.0.0"
+  revision = "2641b987480bca71fb39738eb8c8b0d577cb1d76"
+  version = "v0.9.4"
 
 [[projects]]
   branch = "master"
@@ -199,25 +220,153 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3e0062766e6b0bcfe1ba1ed1d3f08a8e1e99cd5831426e2596dc9537d28f2adb"
+  digest = "1:6709f392f6c8449ec1d23face6328ffe1f1cd7f4b28422bbc3218314ff78bf33"
   name = "golang.org/x/net"
   packages = [
+    "http/httpguts",
+    "http2",
+    "http2/hpack",
+    "idna",
     "internal/socks",
+    "internal/timeseries",
     "proxy",
+    "trace",
   ]
   pruneopts = "UT"
   revision = "da137c7871d730100384dbcf36e6f8fa493aef5b"
 
 [[projects]]
   branch = "master"
-  digest = "1:31d44814b45607afa77c6e8ef20ea8bacc1d1053fe084440c874f311732e7ec3"
+  digest = "1:5632b0c4d972da51b5914f09fc5c1a8535e9d8d5d937e95ef83c423a0dd67f13"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows",
-  ]
+  packages = ["unix"]
   pruneopts = "UT"
   revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
+
+[[projects]]
+  digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
+  name = "golang.org/x/text"
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/language",
+    "internal/language/compact",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable",
+  ]
+  pruneopts = "UT"
+  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
+  version = "v0.3.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:23dd3fce7112bfe3398e02c3d31da8ed4e657b3a37d37c21bea9a091c6505ac0"
+  name = "google.golang.org/genproto"
+  packages = [
+    "googleapis/api/annotations",
+    "googleapis/rpc/status",
+  ]
+  pruneopts = "UT"
+  revision = "bca184e23272c97429f0cb78a825f71ede0635fc"
+
+[[projects]]
+  digest = "1:712fa3cb36bfb9e0d333e10f8dcb9b1e64aa2ec30cabed56c114b5e64d775823"
+  name = "google.golang.org/grpc"
+  packages = [
+    ".",
+    "attributes",
+    "backoff",
+    "balancer",
+    "balancer/base",
+    "balancer/roundrobin",
+    "binarylog/grpc_binarylog_v1",
+    "codes",
+    "connectivity",
+    "credentials",
+    "credentials/internal",
+    "encoding",
+    "encoding/proto",
+    "grpclog",
+    "internal",
+    "internal/backoff",
+    "internal/balancerload",
+    "internal/binarylog",
+    "internal/buffer",
+    "internal/channelz",
+    "internal/envconfig",
+    "internal/grpclog",
+    "internal/grpcrand",
+    "internal/grpcsync",
+    "internal/grpcutil",
+    "internal/resolver/dns",
+    "internal/resolver/passthrough",
+    "internal/status",
+    "internal/syscall",
+    "internal/transport",
+    "keepalive",
+    "metadata",
+    "naming",
+    "peer",
+    "resolver",
+    "serviceconfig",
+    "stats",
+    "status",
+    "tap",
+  ]
+  pruneopts = "UT"
+  revision = "754ee590a4f386d0910d887f3b8776354042260b"
+  version = "v1.29.1"
+
+[[projects]]
+  digest = "1:e98a83a6464ab71657c759d986a8a1dd9757885bc6c0e4167dffa9f5233c97cf"
+  name = "google.golang.org/protobuf"
+  packages = [
+    "encoding/prototext",
+    "encoding/protowire",
+    "internal/descfmt",
+    "internal/descopts",
+    "internal/detrand",
+    "internal/encoding/defval",
+    "internal/encoding/messageset",
+    "internal/encoding/tag",
+    "internal/encoding/text",
+    "internal/errors",
+    "internal/fieldnum",
+    "internal/fieldsort",
+    "internal/filedesc",
+    "internal/filetype",
+    "internal/flags",
+    "internal/genname",
+    "internal/impl",
+    "internal/mapsort",
+    "internal/pragma",
+    "internal/set",
+    "internal/strs",
+    "internal/version",
+    "proto",
+    "reflect/protoreflect",
+    "reflect/protoregistry",
+    "runtime/protoiface",
+    "runtime/protoimpl",
+    "types/descriptorpb",
+    "types/known/anypb",
+    "types/known/durationpb",
+    "types/known/emptypb",
+    "types/known/timestamppb",
+  ]
+  pruneopts = "UT"
+  revision = "3b9eee12916ce611400f93d6c2fed2fc2911b0ad"
+  version = "v1.21.0"
 
 [[projects]]
   digest = "1:c902038ee2d6f964d3b9f2c718126571410c5d81251cbab9fe58abd37803513c"
@@ -299,6 +448,8 @@
   input-imports = [
     "github.com/Shopify/sarama",
     "github.com/gfremex/logrus-kafka-hook",
+    "github.com/golang/protobuf/proto",
+    "github.com/opencord/voltha-protos/go/voltha",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/sirupsen/logrus",
