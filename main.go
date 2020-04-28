@@ -71,7 +71,7 @@ func runServer(target TargetInfo) {
 	err := http.ListenAndServe(":"+strconv.Itoa(target.Port), nil)
 	if err != nil {
 		logger.Error("HTTP Server Error: %s", err.Error())
-       }
+	}
 }
 
 func init() {
@@ -82,12 +82,52 @@ func init() {
 	prometheus.MustRegister(volthaRxPacketsTotal)
 	prometheus.MustRegister(volthaTxErrorPacketsTotal)
 	prometheus.MustRegister(volthaRxErrorPacketsTotal)
+	prometheus.MustRegister(volthaTxBroadcastPacketsTotal)
+	prometheus.MustRegister(volthaTxUnicastPacketsTotal)
+	prometheus.MustRegister(volthaTxMulticastPacketsTotal)
+	prometheus.MustRegister(volthaRxBroadcastPacketsTotal)
+	prometheus.MustRegister(volthaRxUnicastPacketsTotal)
+	prometheus.MustRegister(volthaRxMulticastPacketsTotal)
 
 	prometheus.MustRegister(VolthaOnuLaserBiasCurrent)
 	prometheus.MustRegister(volthaOnuTemperature)
 	prometheus.MustRegister(VolthaOnuPowerFeedVoltage)
 	prometheus.MustRegister(VolthaOnuMeanOpticalLaunchPower)
 	prometheus.MustRegister(VolthaOnuReceivedOpticalPower)
+	prometheus.MustRegister(VolthaOnuTransmtOpticalPower)
+
+	prometheus.MustRegister(volthaCorrectedCodewordsTotal)
+	prometheus.MustRegister(volthaCodewordsTotal)
+	prometheus.MustRegister(volthaCorrectedBytesTotal)
+	prometheus.MustRegister(volthaFecSecondsTotal)
+	prometheus.MustRegister(volthaUncorrectablewordsTotal)
+
+	prometheus.MustRegister(volthaSingleCollisionTotal)
+	prometheus.MustRegister(volthaMacLayerTramsmitErrorTotal)
+	prometheus.MustRegister(volthaMultiCollisionTotal)
+	prometheus.MustRegister(volthaFramestooLongTotal)
+	prometheus.MustRegister(volthaAlignmentErrorTotal)
+	prometheus.MustRegister(volthaCarrierErrorTotal)
+	prometheus.MustRegister(volthaExcessiveCollisionErrorTotal)
+	prometheus.MustRegister(volthaDeferredTxTotal)
+	prometheus.MustRegister(volthaLateCollisionTotal)
+	prometheus.MustRegister(volthaBufferOverflowsRxErrorTotal)
+	prometheus.MustRegister(volthaFcsErrorTotal)
+	prometheus.MustRegister(volthaSqeErrorTotal)
+	prometheus.MustRegister(volthaBufferOverflowsTxErrorTotal)
+
+	prometheus.MustRegister(voltha64octetPacketsTotal)
+	prometheus.MustRegister(voltha_65_127_octetPacketsTotal)
+	prometheus.MustRegister(voltha_128_255_octetPacketsTotal)
+	prometheus.MustRegister(voltha_256_511_octetPacketsTotal)
+	prometheus.MustRegister(voltha_512_1023_octetPacketsTotal)
+	prometheus.MustRegister(voltha_1024_1518_octetPacketsTotal)
+	prometheus.MustRegister(volthaMulticastPacketsTotal)
+	prometheus.MustRegister(volthaBroadcastPacketsTotal)
+	prometheus.MustRegister(volthaOversizePacketsTotal)
+	prometheus.MustRegister(volthaCrcErrorPacketsTotal)
+	prometheus.MustRegister(volthaUndersizePacketsTotal)
+	prometheus.MustRegister(volthaDropEventsTotal)
 
 	prometheus.MustRegister(onosTxBytesTotal)
 	prometheus.MustRegister(onosRxBytesTotal)
@@ -134,7 +174,7 @@ func init() {
 	prometheus.MustRegister(onosaaaEapPktTxAuthChooseEap)
 	prometheus.MustRegister(onosaaaTxRespnotNak)
 
-        prometheus.MustRegister(onosaaaEapolFramesTx)
+	prometheus.MustRegister(onosaaaEapolFramesTx)
 	prometheus.MustRegister(onosaaaAuthStateIdle)
 	prometheus.MustRegister(onosaaaRequestIdFramesTx)
 	prometheus.MustRegister(onosaaaRequestEapFramesTx)

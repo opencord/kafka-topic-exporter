@@ -17,6 +17,8 @@ package main
 import (
 	"encoding/json"
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"github.com/golang/protobuf/proto"
+	"github.com/opencord/voltha-protos/go/voltha"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"strconv"
@@ -70,6 +72,54 @@ var (
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
 
+	volthaTxBroadcastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_tx_broadcast_packets_total",
+			Help: "Number of total broadcast packets transmitted",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaTxUnicastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_tx_unicast_packets_total",
+			Help: "Number of total unicast packets transmitted",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaTxMulticastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_tx_multicast_packets_total",
+			Help: "Number of total multicast packets transmitted",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaRxBroadcastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_rx_broadcast_packets_total",
+			Help: "Number of total broadcast packets received",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaRxUnicastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_rx_unicast_packets_total",
+			Help: "Number of total unicast packets received",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaRxMulticastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_rx_multicast_packets_total",
+			Help: "Number of total multicast packets received",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
 	// optical parameters
 	VolthaOnuLaserBiasCurrent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -107,6 +157,244 @@ var (
 		prometheus.GaugeOpts{
 			Name: "voltha_onu_received_optical_power",
 			Help: "ONU received optical power",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	VolthaOnuTransmtOpticalPower = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_onu_transmit_optical_power",
+			Help: "ONU transmited optical power",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	// FEC parameters
+	volthaCorrectedCodewordsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_corrected_code_words",
+			Help: "Number of total code words corrected",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaCodewordsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_code_words_total",
+			Help: "Number of total code words",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaCorrectedBytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_corrected_bytes_total",
+			Help: "Number of total corrected bytes",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaFecSecondsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_corrected_fec_seconds_total",
+			Help: "Number of fec seconds total",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaUncorrectablewordsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_uncorrectable_words_total",
+			Help: "Number of fec uncorrectable words",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	//Etheret UNI
+
+	volthaSingleCollisionTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_single_collision_frame_counter",
+			Help: "successfully transmitted frames but delayed by exactly one collision.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaMacLayerTramsmitErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_internal_mac_rx_error_counter",
+			Help: "transmission failed due to an internal MAC sublayer transmit error.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaMultiCollisionTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_multiple_collisions_frame_counter",
+			Help: "successfully transmitted frames but delayed by multiple collisions.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaFramestooLongTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_frames_too_long",
+			Help: "frames that exceeded the maximum permitted frame size.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaAlignmentErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_alignment_error_counter",
+			Help: "frames that were not an integral number of octets in length and did not pass the FCS check.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaCarrierErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_carrier_sense_error_counter",
+			Help: "number of times that carrier sense was lost or never asserted when attempting to transmit a frame.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaExcessiveCollisionErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_excessive_collision_counter",
+			Help: "frames whose transmission failed due to excessive collisions.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaDeferredTxTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_deferred_tx_counter",
+			Help: "frames whose first transmission attempt was delayed because the medium was busy.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaLateCollisionTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_late_collision_counter",
+			Help: "number of times that a collision was detected later than 512 bit times into the transmission of a packet.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaBufferOverflowsRxErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_buffer_overflows_on_rx",
+			Help: "number of times that the receive buffer overflowed.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaFcsErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_fcs_errors",
+			Help: " frames failed the frame check sequence (FCS) check.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaSqeErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_sqe_counter",
+			Help: "number of times that the SQE test error message was generated by the PLS sublayer",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaBufferOverflowsTxErrorTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_buffer_overflows_on_tx",
+			Help: " number of times that the transmit buffer overflowed.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	//Ethernet_Bridge_Port
+
+	voltha64octetPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_64_octets_packets",
+			Help: "packets (including bad packets) that were 64 octets long",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	voltha_65_127_octetPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_65_to_127_octet_packets",
+			Help: "packets (including bad packets) that were 65..127 octets long, excluding framing bits but including FCS.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	voltha_128_255_octetPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_128_to_255_octet_packets",
+			Help: "packets (including bad packets) received that were 128..255 octets long, excluding framing bits but including FCS.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	voltha_256_511_octetPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_256_to_511_octet_packets",
+			Help: "packets (including bad packets) received that were 256..511 octets long, excluding framing bits but including FCS.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	voltha_512_1023_octetPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_512_to_1023_octet_packets",
+			Help: "packets (including bad packets) received that were 512..1 023 octets long, excluding framing bits but including FCS.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	voltha_1024_1518_octetPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_1024_to_1518_octet_packets",
+			Help: "packets (including bad packets) received that were 1024..1518 octets long, excluding framing bits, but including FCS.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaMulticastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_multicast_packets",
+			Help: "packets received that were directed to a multicast address.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaBroadcastPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_broadcast_packets",
+			Help: "packets received that were directed to the broadcast address.",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaOversizePacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_oversize_packets",
+			Help: " packets received that were longer than 1518 octets",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaCrcErrorPacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_crc_errored_packets",
+			Help: "Packets with CRC errors",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+	volthaUndersizePacketsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_undersize_packets",
+			Help: "Packets received that were less than 64 octets long, but were otherwise well formed",
+		},
+		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
+	)
+
+	volthaDropEventsTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "voltha_drop_events",
+			Help: "total number of events in which packets were dropped due to a lack of resources. ",
 		},
 		[]string{"logical_device_id", "serial_number", "device_id", "interface_id", "pon_id", "port_number", "title"},
 	)
@@ -433,249 +721,639 @@ var (
 		})
 )
 
-func exportVolthaKPI(kpi VolthaKPI) {
+func exportVolthaEthernetPonStats(data *voltha.MetricInformation) {
 
-	for _, data := range kpi.SliceDatas {
-		switch title := data.Metadata.Title; title {
-		case "Ethernet", "PON":
-			volthaTxBytesTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.TxBytes)
+	volthaTxBytesTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["TxBytes"]))
 
-			volthaRxBytesTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.RxBytes)
+	volthaRxBytesTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["RxBytes"]))
 
-			volthaTxPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.TxPackets)
+	volthaTxPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["TxPackets"]))
 
-			volthaRxPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.RxPackets)
+	volthaRxPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["RxPackets"]))
 
-			volthaTxErrorPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.TxErrorPackets)
+	volthaTxErrorPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["TxErrorPackets"]))
 
-			volthaRxErrorPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.RxErrorPackets)
+	volthaRxErrorPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["RxErrorPackets"]))
 
-			// TODO add metrics for:
-			// TxBcastPackets
-			// TxUnicastPackets
-			// TxMulticastPackets
-			// RxBcastPackets
-			// RxMulticastPackets
+	volthaTxBroadcastPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["TxBcastPackets"]))
 
+	volthaTxUnicastPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["TxUcastPackets"]))
+
+	volthaTxMulticastPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["TxMcastPackets"]))
+
+	volthaRxBroadcastPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["RxBcastPackets"]))
+
+	volthaRxUnicastPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["RxUcastPackets"]))
+
+	volthaRxMulticastPacketsTotal.WithLabelValues(
+		"NA", //LogicalDeviceID
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		data.GetMetadata().GetContext()["portno"],
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["RxMcastPackets"]))
+}
+
+func exportVolthaEthernetBridgePortStats(data *voltha.MetricInformation) {
+
+	if (data.GetMetadata().GetContext()["upstream"]) == "True" {
+		// ONU. Extended Ethernet statistics.
+		volthaTxPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["packets"]))
+
+		volthaTxBytesTotal.WithLabelValues(
+			data.GetMetadata().GetLogicalDeviceId(),
+			data.GetMetadata().GetSerialNo(),
+			data.GetMetadata().GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["octets"]))
+
+		voltha64octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["64_octets"]))
+
+		voltha_65_127_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["65_to_127_octets"]))
+
+		voltha_128_255_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["128_to_255_octets"]))
+
+		voltha_256_511_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["256_to_511_octets"]))
+
+		voltha_512_1023_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["512_to_1023_octets"]))
+
+		voltha_1024_1518_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["1024_to_1518_octets"]))
+
+		volthaMulticastPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["multicast_packets"]))
+
+		volthaBroadcastPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["broadcast_packets"]))
+
+		volthaOversizePacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["oversize_packets"]))
+
+		volthaCrcErrorPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["crc_errored_packets"]))
+
+		volthaUndersizePacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["undersize_packets"]))
+
+		volthaDropEventsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["drop_events"]))
+
+	} else {
+
+		// ONU. Extended Ethernet statistics.
+		volthaRxPacketsTotal.WithLabelValues(
+			data.GetMetadata().GetLogicalDeviceId(),
+			data.GetMetadata().GetSerialNo(),
+			data.GetMetadata().GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["packets"]))
+
+		volthaRxBytesTotal.WithLabelValues(
+			data.GetMetadata().GetLogicalDeviceId(),
+			data.GetMetadata().GetSerialNo(),
+			data.GetMetadata().GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["octets"]))
+
+		voltha64octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["64_octets"]))
+
+		voltha_65_127_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["65_to_127_octets"]))
+
+		voltha_128_255_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["128_to_255_octets"]))
+
+		voltha_256_511_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["256_to_511_octets"]))
+
+		voltha_512_1023_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["512_to_1023_octets"]))
+
+		voltha_1024_1518_octetPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["1024_to_1518_octets"]))
+
+		volthaMulticastPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["multicast_packets"]))
+
+		volthaBroadcastPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["broadcast_packets"]))
+
+		volthaOversizePacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["oversize_packets"]))
+
+		volthaCrcErrorPacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["crc_errored_packets"]))
+
+		volthaUndersizePacketsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["undersize_packets"]))
+
+		volthaDropEventsTotal.WithLabelValues(
+			data.Metadata.GetLogicalDeviceId(),
+			data.Metadata.GetSerialNo(),
+			data.Metadata.GetDeviceId(),
+			"NA", // InterfaceID
+			"NA", // PonID
+			"NA", // PortNumber
+			data.GetMetadata().GetTitle(),
+		).Add(float64(data.GetMetrics()["drop_events"]))
+
+	}
+}
+
+func exportVolthaPonOpticalStats(data *voltha.MetricInformation) {
+	VolthaOnuTransmtOpticalPower.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		data.GetMetadata().GetContext()["intf_id"],
+		"NA", // PonID,
+		"NA", //PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["transmit_power"]))
+
+	VolthaOnuReceivedOpticalPower.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		data.GetMetadata().GetContext()["intf_id"],
+		"NA", // PonID,
+		"NA", //PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["receive_power"]))
+}
+func exportVolthaFecStats(data *voltha.MetricInformation) {
+	volthaCorrectedCodewordsTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["corrected_code_words"]))
+
+	volthaCodewordsTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["total_code_words"]))
+
+	volthaCorrectedBytesTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["corrected_bytes"]))
+
+	volthaFecSecondsTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["fec_seconds"]))
+
+	volthaUncorrectablewordsTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["uncorrectable_code_words"]))
+}
+func exportVolthaEthernetUniStats(data *voltha.MetricInformation) {
+
+	volthaSingleCollisionTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["single_collision_frame_counter"]))
+
+	volthaMacLayerTramsmitErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["internal_mac_rx_error_counter"]))
+
+	volthaMultiCollisionTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["multiple_collisions_frame_counter"]))
+
+	volthaFramestooLongTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["frames_too_long"]))
+	volthaAlignmentErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["alignment_error_counter"]))
+
+	volthaCarrierErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["carrier_sense_error_counter"]))
+	volthaExcessiveCollisionErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["excessive_collision_counter"]))
+
+	volthaDeferredTxTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["deferred_tx_counter"]))
+
+	volthaLateCollisionTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["late_collision_counter"]))
+
+	volthaBufferOverflowsRxErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()[""]))
+
+	volthaFcsErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["fcs_errors"]))
+
+	volthaSqeErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["sqe_counter"]))
+
+	volthaBufferOverflowsTxErrorTotal.WithLabelValues(
+		data.GetMetadata().GetLogicalDeviceId(),
+		data.GetMetadata().GetSerialNo(),
+		data.GetMetadata().GetDeviceId(),
+		"NA", // InterfaceID
+		"NA", // PonID
+		"NA", // PortNumber
+		data.GetMetadata().GetTitle(),
+	).Set(float64(data.GetMetrics()["buffer_overflows_on_tx"]))
+
+}
+
+func exportVolthaKPIevent2(kpi *voltha.KpiEvent2) {
+	for _, data := range kpi.GetSliceData() {
+		switch title := data.GetMetadata().GetTitle(); title {
+		case "ETHERNET_NNI", "PON_OLT":
+			exportVolthaEthernetPonStats(data)
 		case "Ethernet_Bridge_Port_History":
-			if data.Metadata.Context.Upstream == "True" {
-				// ONU. Extended Ethernet statistics.
-				volthaTxPacketsTotal.WithLabelValues(
-					data.Metadata.LogicalDeviceID,
-					data.Metadata.SerialNumber,
-					data.Metadata.DeviceID,
-					"NA", // InterfaceID
-					"NA", // PonID
-					"NA", // PortNumber
-					data.Metadata.Title,
-				).Add(data.Metrics.Packets)
-
-				volthaTxBytesTotal.WithLabelValues(
-					data.Metadata.LogicalDeviceID,
-					data.Metadata.SerialNumber,
-					data.Metadata.DeviceID,
-					"NA", // InterfaceID
-					"NA", // PonID
-					"NA", // PortNumber
-					data.Metadata.Title,
-				).Add(data.Metrics.Octets)
-			} else {
-				// ONU. Extended Ethernet statistics.
-				volthaRxPacketsTotal.WithLabelValues(
-					data.Metadata.LogicalDeviceID,
-					data.Metadata.SerialNumber,
-					data.Metadata.DeviceID,
-					"NA", // InterfaceID
-					"NA", // PonID
-					"NA", // PortNumber
-					data.Metadata.Title,
-				).Add(data.Metrics.Packets)
-
-				volthaRxBytesTotal.WithLabelValues(
-					data.Metadata.LogicalDeviceID,
-					data.Metadata.SerialNumber,
-					data.Metadata.DeviceID,
-					"NA", // InterfaceID
-					"NA", // PonID
-					"NA", // PortNumber
-					data.Metadata.Title,
-				).Add(data.Metrics.Octets)
-			}
-
+			exportVolthaEthernetBridgePortStats(data)
 		case "PON_Optical":
-			VolthaOnuLaserBiasCurrent.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.LaserBiasCurrent)
-
-			volthaOnuTemperature.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.Temperature)
-
-			VolthaOnuPowerFeedVoltage.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.PowerFeedVoltage)
-
-			VolthaOnuMeanOpticalLaunchPower.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.MeanOpticalLaunchPower)
-
-			VolthaOnuReceivedOpticalPower.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.ReceivedOpticalPower)
-
+			exportVolthaPonOpticalStats(data)
 		case "Ethernet_UNI_History":
-			// ONU. Do nothing.
-
+			exportVolthaEthernetUniStats(data)
 		case "FEC_History":
-			// ONU. Do Nothing.
+			exportVolthaFecStats(data)
+		case "UNI_Status":
+			//  Do nothing.
 
-			volthaTxBytesTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.TxBytes)
-
-			volthaRxBytesTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.RxBytes)
-
-			volthaTxPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.TxPackets)
-
-			volthaRxPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.RxPackets)
-
-			volthaTxErrorPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.TxErrorPackets)
-
-			volthaRxErrorPacketsTotal.WithLabelValues(
-				data.Metadata.LogicalDeviceID,
-				data.Metadata.SerialNumber,
-				data.Metadata.DeviceID,
-				data.Metadata.Context.InterfaceID,
-				data.Metadata.Context.PonID,
-				data.Metadata.Context.PortNumber,
-				data.Metadata.Title,
-			).Set(data.Metrics.RxErrorPackets)
-
-			// TODO add metrics for:
-			// TxBcastPackets
-			// TxUnicastPackets
-			// TxMulticastPackets
-			// RxBcastPackets
-			// RxMulticastPackets
-
-		case "voltha.internal":
-			// Voltha Internal. Do nothing.
 		}
 	}
 }
@@ -953,14 +1631,19 @@ func exportOnosBngKPI(kpi OnosBngKPI) {
 
 func export(topic *string, data []byte) {
 	switch *topic {
-	case "voltha.kpis":
-		kpi := VolthaKPI{}
-		err := json.Unmarshal(data, &kpi)
+	case "voltha.events":
+		event := voltha.Event{}
+		err := proto.Unmarshal(data, &event)
 		if err != nil {
 			logger.Error("Invalid msg on voltha.kpis: %s, Unprocessed Msg: %s", err.Error(), string(data))
 			break
 		}
-		exportVolthaKPI(kpi)
+		if event.GetHeader().GetType() == voltha.EventType_KPI_EVENT2 {
+			logger.Debug("KPI_EVENT2 received on voltha.events")
+			kpiEvent2 := event.GetKpiEvent2()
+			exportVolthaKPIevent2(kpiEvent2)
+		}
+
 	case "onos.kpis":
 		kpi := OnosKPI{}
 		err := json.Unmarshal(data, &kpi)
