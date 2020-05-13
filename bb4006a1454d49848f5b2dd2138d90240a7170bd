@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "422adf13_5e982ff6",
+        "filename": "main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-05-13T09:59:27Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "500f4f0d_7092f157",
+      "revId": "bb4006a1454d49848f5b2dd2138d90240a7170bd",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c315d88c_a44b545c",
         "filename": "topic-exporter.go",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2020-05-13T09:28:25Z",
       "side": 1,
       "message": "The indentation does not seem to be uniform, tabs in some places and others white spaces. Please check",
+      "revId": "bb4006a1454d49848f5b2dd2138d90240a7170bd",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c12e335e_b2558eca",
+        "filename": "topic-exporter.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-05-13T09:59:27Z",
+      "side": 1,
+      "message": "fixed",
+      "parentUuid": "c315d88c_a44b545c",
       "revId": "bb4006a1454d49848f5b2dd2138d90240a7170bd",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
