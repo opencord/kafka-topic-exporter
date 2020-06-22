@@ -19,8 +19,8 @@ import (
 	"os/signal"
 	"sync"
 
-	"github.com/Shopify/sarama"
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"github.com/Shopify/sarama"
 )
 
 func topicListener(topic *string, master sarama.Consumer, wg sync.WaitGroup) {

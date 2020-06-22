@@ -15,17 +15,18 @@
 package main
 
 import (
-	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
-	"github.com/Shopify/sarama"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"sync"
+
+	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"github.com/Shopify/sarama"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"gopkg.in/yaml.v2"
 )
 
 func kafkaInit(broker BrokerInfo) {
@@ -200,6 +201,19 @@ func init() {
 	prometheus.MustRegister(onosaaaValidEapolFramesRx)
 	prometheus.MustRegister(onosaaaPendingResSupplicant)
 	prometheus.MustRegister(onosaaaRxResIdEapFrames)
+
+	//device metrics
+	//TODO: Check if component level temperatures are supported by Devices,If not remove in later versions of exporter
+	prometheus.MustRegister(oltDeviceCpuTemp)
+	prometheus.MustRegister(oltDeviceCpuUsagePercent)
+	prometheus.MustRegister(oltDeviceFanSpeed)
+	prometheus.MustRegister(oltDeviceDiskTemp)
+	prometheus.MustRegister(oltDeviceDiskUsagePercent)
+	prometheus.MustRegister(oltDeviceRamTemp)
+	prometheus.MustRegister(oltDeviceRamUsagePercent)
+	prometheus.MustRegister(oltDevicePowerUsagePercent)
+	prometheus.MustRegister(oltDeviceInnerSurroundTemp)
+	prometheus.MustRegister(oltDevicePowerUsage)
 }
 
 func loadConfigFile() Config {

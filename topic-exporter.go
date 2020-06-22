@@ -16,13 +16,15 @@ package main
 
 import (
 	"encoding/json"
+	"strconv"
+	"strings"
+
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
 	"github.com/golang/protobuf/proto"
+	"github.com/opencord/device-management-interface/go/dmi"
 	"github.com/opencord/voltha-protos/go/voltha"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"strconv"
-	"strings"
 )
 
 var (
@@ -728,7 +730,9 @@ var (
 		},
 		[]string{"mac_address", "ip", "session_id", "s_tag", "c_tag", "onu_serial", "type"},
 	)
-
+	/* The device metrics will be removed in future and device
+	   metrics defined in VOL-3255 will be supported
+	*/
 	deviceLaserBiasCurrent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "device_laser_bias_current",
@@ -838,7 +842,96 @@ var (
 			Name: "onosaaa_rx_res_id_eap_frames",
 			Help: "Number of response ID EAP frames received",
 		})
+	//OLT Device Metrics
+	//TODO: Check if component level temperatures are supported by Devices,If not remove in later versions of exporter
+	oltDeviceCpuTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_cpu_temperature",
+			Help: "cpu temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+
+	oltDeviceCpuUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_cpu_usage_percentage",
+			Help: "usage of cpu",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceFanSpeed = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_fan_speed",
+			Help: "fan speed",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_temp",
+			Help: "disk temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_usage_percent",
+			Help: "disk usage percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceRamTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_ram_temp",
+			Help: "RAM temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceRamUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_ram_usage_percentage",
+			Help: "RAM usage percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+
+	oltDevicePowerUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_power_usage_percentage",
+			Help: "power usage percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+
+	oltDeviceInnerSurroundTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_inner_surrounding_temperature",
+			Help: "inner surrounding temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+
+	oltDevicePowerUsage = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_power_usage",
+			Help: "power usage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
 )
+
+var oltDeviceMetrics = map[dmi.MetricNames]*prometheus.GaugeVec{
+	dmi.MetricNames_METRIC_CPU_TEMP:               oltDeviceCpuTemp,
+	dmi.MetricNames_METRIC_CPU_USAGE_PERCENTAGE:   oltDeviceCpuUsagePercent,
+	dmi.MetricNames_METRIC_FAN_SPEED:              oltDeviceFanSpeed,
+	dmi.MetricNames_METRIC_DISK_TEMP:              oltDeviceDiskTemp,
+	dmi.MetricNames_METRIC_DISK_USAGE_PERCENTAGE:  oltDeviceDiskUsagePercent,
+	dmi.MetricNames_METRIC_RAM_TEMP:               oltDeviceRamTemp,
+	dmi.MetricNames_METRIC_RAM_USAGE_PERCENTAGE:   oltDeviceRamUsagePercent,
+	dmi.MetricNames_METRIC_POWER_USAGE_PERCENTAGE: oltDevicePowerUsagePercent,
+	dmi.MetricNames_METRIC_INNER_SURROUNDING_TEMP: oltDeviceInnerSurroundTemp,
+	dmi.MetricNames_METRIC_POWER_USAGE:            oltDevicePowerUsage,
+}
 
 func exportVolthaEthernetPonStats(data *voltha.MetricInformation) {
 
@@ -1416,6 +1509,17 @@ func exportImporterKPI(kpi ImporterKPI) {
 	).Set(kpi.Voltage)
 }
 
+func exportDeviceKPI(kpi *dmi.Metric) {
+
+	if metrics, ok := oltDeviceMetrics[kpi.GetMetricId()]; ok {
+		metrics.WithLabelValues(
+			kpi.GetMetricMetadata().GetDeviceUuid().GetUuid(),
+			kpi.GetMetricMetadata().GetComponentUuid().GetUuid(),
+			kpi.GetMetricMetadata().GetComponentName(),
+		).Set(float64(kpi.GetValue().GetValue()))
+	}
+}
+
 func exportOnosAaaKPI(kpi OnosAaaKPI) {
 
 	onosaaaRxAcceptResponses.Set(kpi.RxAcceptResponses)
@@ -1701,6 +1805,14 @@ func export(topic *string, data []byte) {
 			break
 		}
 		exportOnosBngKPI(kpi)
+	case "dm.metrics":
+		kpi := dmi.Metric{}
+		err := proto.Unmarshal(data, &kpi)
+		if err != nil {
+			logger.Error("Invalid msg on device topic : %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
+		}
+		exportDeviceKPI(&kpi)
 	default:
 		logger.Warn("Unexpected export. Topic [%s] not supported. Should not come here", *topic)
 	}

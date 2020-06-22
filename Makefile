@@ -52,3 +52,8 @@ test:
 
 clean:
 	@echo "No cleanup available"
+
+mod-update:
+	go mod tidy
+	go mod vendor
+
