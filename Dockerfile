@@ -15,15 +15,11 @@
 # docker build -t opencord/kafka-topic-exporter:latest .
 # docker build -t 10.128.22.1:30500/opencord/kafka-topic-exporter:latest .
 
-FROM golang:1.10-stretch as builder
+FROM golang:1.14-stretch as builder
 RUN mkdir -p /go/src/gerrit.opencord.org/kafka-topic-exporter
-RUN go get -u github.com/golang/dep/cmd/dep
-ADD Gopkg.lock /go/src/gerrit.opencord.org/kafka-topic-exporter
-ADD Gopkg.toml /go/src/gerrit.opencord.org/kafka-topic-exporter
 WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter
-RUN dep ensure --vendor-only
 ADD . /go/src/gerrit.opencord.org/kafka-topic-exporter
-RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o main .
 
 FROM alpine:3.8
 WORKDIR /go/src/gerrit.opencord.org/kafka-topic-exporter/
