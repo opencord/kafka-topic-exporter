@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a0ea1f2_90b6d603",
+        "filename": "topic-exporter.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 1016,
+      "author": {
+        "id": 1000097
+      },
+      "writtenOn": "2020-06-22T09:31:48Z",
+      "side": 1,
+      "message": "The Jira VOL-3255 talks only about a few of these metrics. Can we keep the patchset simple and have only those for now?",
+      "revId": "fe3858c2b04373abbbda750a7f3b78df2b0ce7ca",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
