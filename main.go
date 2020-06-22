@@ -15,17 +15,18 @@
 package main
 
 import (
-	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
-	"github.com/Shopify/sarama"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"sync"
+
+	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"github.com/Shopify/sarama"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"gopkg.in/yaml.v2"
 )
 
 func kafkaInit(broker BrokerInfo) {
@@ -200,6 +201,31 @@ func init() {
 	prometheus.MustRegister(onosaaaValidEapolFramesRx)
 	prometheus.MustRegister(onosaaaPendingResSupplicant)
 	prometheus.MustRegister(onosaaaRxResIdEapFrames)
+
+	//device metrics
+	prometheus.MustRegister(oltDeviceCpuTemp)
+	prometheus.MustRegister(oltDeviceCpuUsagePercent)
+	prometheus.MustRegister(oltDeviceFanSpeed)
+	prometheus.MustRegister(oltDeviceTransceiverTemp)
+	prometheus.MustRegister(oltDeviceTransceiverVolt)
+	prometheus.MustRegister(oltDeviceTransceiverBias)
+	prometheus.MustRegister(oltDeviceTransceiverRxPower)
+	prometheus.MustRegister(oltDeviceTransceiverTxPower)
+	prometheus.MustRegister(oltDeviceTransceiverWavelength)
+	prometheus.MustRegister(oltDeviceDiskTemp)
+	prometheus.MustRegister(oltDeviceDiskCapacity)
+	prometheus.MustRegister(oltDeviceDiskusage)
+	prometheus.MustRegister(oltDeviceDiskUsagePercent)
+	prometheus.MustRegister(oltDeviceDiskRWPercent)
+	prometheus.MustRegister(oltDeviceDiskFaultyCellsPercent)
+	prometheus.MustRegister(oltDeviceRamTemp)
+	prometheus.MustRegister(oltDeviceRamCapacity)
+	prometheus.MustRegister(oltDeviceRamUsage)
+	prometheus.MustRegister(oltDeviceRamUsagePercent)
+	prometheus.MustRegister(oltDeviceMaxPower)
+	prometheus.MustRegister(oltDevicePowerUsage)
+	prometheus.MustRegister(oltDevicePowerUsagePercent)
+	prometheus.MustRegister(oltDeviceInnerSurroundingTemp)
 }
 
 func loadConfigFile() Config {

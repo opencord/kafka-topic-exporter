@@ -1,7 +1,8 @@
 ---
 broker:
   name: broker-name
-  host: cord-kafka.default.svc.cluster.local:9092
+#  host: cord-kafka.default.svc.cluster.local:9092
+  host: 172.27.30.34:9092
   description: The kafka broker
   topics:
     - importer
@@ -9,9 +10,11 @@ broker:
     - onos.aaa.stats.kpis
     - bng.stats
     - voltha.events
+    - dm.metrics
 logger:
   loglevel: debug
-  host: cord-kafka.default.svc.cluster.local:9092
+#  host: cord-kafka.default.svc.cluster.local:9092
+  host: 172.27.30.34:9092
 target:
   type: prometheus-target
   name: http-server
