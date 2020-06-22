@@ -16,13 +16,15 @@ package main
 
 import (
 	"encoding/json"
+	"strconv"
+	"strings"
+
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
 	"github.com/golang/protobuf/proto"
+	"github.com/opencord/device-management-interface/go/dmi"
 	"github.com/opencord/voltha-protos/go/voltha"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"strconv"
-	"strings"
 )
 
 var (
@@ -838,7 +840,196 @@ var (
 			Name: "onosaaa_rx_res_id_eap_frames",
 			Help: "Number of response ID EAP frames received",
 		})
+	//OLT Device Metrics
+	oltDeviceCpuTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_cpu_temperature",
+			Help: "cpu temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+
+	oltDeviceCpuUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_cpu_usage_percentage",
+			Help: "usage of cpu",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceFanSpeed = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_fan_speed",
+			Help: "fan speed",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceTransceiverTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_transceiver_temp",
+			Help: "transceiver Temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceTransceiverVolt = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_transceiver_voltage",
+			Help: "transceiver voltage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceTransceiverBias = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_transceiver_bias",
+			Help: "transceiver bias",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceTransceiverRxPower = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_transceiver_rx_power",
+			Help: "Transceiver rx power",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceTransceiverTxPower = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_transceiver_tx_power",
+			Help: "transceiver tx power",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceTransceiverWavelength = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_transceiver_wavelength",
+			Help: "transceiver wavelength",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_temp",
+			Help: "disk temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskCapacity = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_capacity",
+			Help: "disk capacity",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskusage = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_usage",
+			Help: "disk usage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_usage_percent",
+			Help: "disk usage percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskRWPercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_readwrite_percentage",
+			Help: "disk readwrite percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceDiskFaultyCellsPercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_disk_faulty_cells_percentage",
+			Help: "device faulty cells percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceRamTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_ram_temp",
+			Help: "RAM temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceRamCapacity = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_ram_capacity",
+			Help: "RAM capacity",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceRamUsage = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_ram_usage",
+			Help: "RAM usage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceRamUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_ram_usage_percentage",
+			Help: "RAM usage percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceMaxPower = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_max_power",
+			Help: "max power",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDevicePowerUsage = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_power_usage",
+			Help: "power usage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDevicePowerUsagePercent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_power_usage_percentage",
+			Help: "power usage percentage",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
+	oltDeviceInnerSurroundingTemp = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "olt_device_inner_ssurrounding_temp",
+			Help: "inner surrounding temperature",
+		},
+		[]string{"deviceuuid", "componentuuid", "componentname"},
+	)
 )
+
+var oltDeviceMetrics = map[dmi.MetricNames]*prometheus.GaugeVec{
+	dmi.MetricNames_METRIC_CPU_TEMP:                     oltDeviceCpuTemp,
+	dmi.MetricNames_METRIC_CPU_USAGE_PERCENTAGE:         oltDeviceCpuUsagePercent,
+	dmi.MetricNames_METRIC_FAN_SPEED:                    oltDeviceFanSpeed,
+	dmi.MetricNames_METRIC_TRANSCEIVER_TEMP:             oltDeviceTransceiverTemp,
+	dmi.MetricNames_METRIC_TRANSCEIVER_VOLTAGE:          oltDeviceTransceiverVolt,
+	dmi.MetricNames_METRIC_TRANSCEIVER_BIAS:             oltDeviceTransceiverBias,
+	dmi.MetricNames_METRIC_TRANSCEIVER_RX_POWER:         oltDeviceTransceiverRxPower,
+	dmi.MetricNames_METRIC_TRANSCEIVER_TX_POWER:         oltDeviceTransceiverTxPower,
+	dmi.MetricNames_METRIC_TRANSCEIVER_WAVELENGTH:       oltDeviceTransceiverWavelength,
+	dmi.MetricNames_METRIC_DISK_TEMP:                    oltDeviceDiskTemp,
+	dmi.MetricNames_METRIC_DISK_CAPACITY:                oltDeviceDiskCapacity,
+	dmi.MetricNames_METRIC_DISK_USAGE:                   oltDeviceDiskusage,
+	dmi.MetricNames_METRIC_DISK_USAGE_PERCENTAGE:        oltDeviceDiskUsagePercent,
+	dmi.MetricNames_METRIC_DISK_READ_WRITE_PERCENTAGE:   oltDeviceDiskRWPercent,
+	dmi.MetricNames_METRIC_DISK_FAULTY_CELLS_PERCENTAGE: oltDeviceDiskFaultyCellsPercent,
+	dmi.MetricNames_METRIC_RAM_TEMP:                     oltDeviceRamTemp,
+	dmi.MetricNames_METRIC_RAM_CAPACITY:                 oltDeviceRamCapacity,
+	dmi.MetricNames_METRIC_RAM_USAGE:                    oltDeviceRamUsage,
+	dmi.MetricNames_METRIC_RAM_USAGE_PERCENTAGE:         oltDeviceRamUsagePercent,
+	dmi.MetricNames_METRIC_POWER_MAX:                    oltDeviceMaxPower,
+	dmi.MetricNames_METRIC_POWER_USAGE:                  oltDevicePowerUsage,
+	dmi.MetricNames_METRIC_POWER_USAGE_PERCENTAGE:       oltDevicePowerUsagePercent,
+	dmi.MetricNames_METRIC_INNER_SURROUNDING_TEMP:       oltDeviceInnerSurroundingTemp,
+}
 
 func exportVolthaEthernetPonStats(data *voltha.MetricInformation) {
 
@@ -1416,6 +1607,17 @@ func exportImporterKPI(kpi ImporterKPI) {
 	).Set(kpi.Voltage)
 }
 
+func exportDeviceKPI(kpi *dmi.Metric) {
+
+	if metrics, ok := oltDeviceMetrics[kpi.GetMetricId()]; ok {
+		metrics.WithLabelValues(
+			kpi.GetMetricMetadata().GetDeviceUuid().GetUuid(),
+			kpi.GetMetricMetadata().GetComponentUuid().GetUuid(),
+			kpi.GetMetricMetadata().GetComponentName(),
+		).Set(float64(kpi.GetValue().GetValue()))
+	}
+}
+
 func exportOnosAaaKPI(kpi OnosAaaKPI) {
 
 	onosaaaRxAcceptResponses.Set(kpi.RxAcceptResponses)
@@ -1701,6 +1903,14 @@ func export(topic *string, data []byte) {
 			break
 		}
 		exportOnosBngKPI(kpi)
+	case "dm.metrics":
+		kpi := dmi.Metric{}
+		err := proto.Unmarshal(data, &kpi)
+		if err != nil {
+			logger.Error("Invalid msg on device topic : %s, Unprocessed Msg: %s", err.Error(), string(data))
+			break
+		}
+		exportDeviceKPI(&kpi)
 	default:
 		logger.Warn("Unexpected export. Topic [%s] not supported. Should not come here", *topic)
 	}
