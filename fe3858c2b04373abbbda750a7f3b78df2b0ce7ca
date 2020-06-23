@@ -16,6 +16,24 @@
       "revId": "fe3858c2b04373abbbda750a7f3b78df2b0ce7ca",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4346abce_3076b4c7",
+        "filename": "topic-exporter.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 1016,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-06-23T06:30:25Z",
+      "side": 1,
+      "message": "Addressed the comment.",
+      "parentUuid": "2a0ea1f2_90b6d603",
+      "revId": "fe3858c2b04373abbbda750a7f3b78df2b0ce7ca",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
