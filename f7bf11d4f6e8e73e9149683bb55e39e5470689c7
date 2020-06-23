@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "441c70af_4f97dce5",
+        "filename": "Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-06-23T14:35:31Z",
+      "side": 1,
+      "message": "Moving to go mod is a step in the right direction, but ultimately we may want to move to a vendor directory, like most other voltha components.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 19
+      },
+      "revId": "f7bf11d4f6e8e73e9149683bb55e39e5470689c7",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87eb7cc5_07f24431",
+        "filename": "topic-exporter.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 761,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-06-23T14:35:31Z",
+      "side": 1,
+      "message": "Are these now made obsolete by the new metrics?",
+      "range": {
+        "startLine": 733,
+        "startChar": 0,
+        "endLine": 761,
+        "endChar": 2
+      },
+      "revId": "f7bf11d4f6e8e73e9149683bb55e39e5470689c7",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
