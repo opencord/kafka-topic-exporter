@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9dc18ee5_dc584461",
+        "filename": "Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-06-25T06:16:00Z",
+      "side": 1,
+      "message": "addressed the comment by adding vendor",
+      "parentUuid": "441c70af_4f97dce5",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 19
+      },
+      "revId": "f7bf11d4f6e8e73e9149683bb55e39e5470689c7",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "87eb7cc5_07f24431",
         "filename": "topic-exporter.go",
         "patchSetId": 3
@@ -60,6 +84,30 @@
       "side": 1,
       "message": "Yes the same metrics should now be available through the dm.metrics topic coming from implementations of the device management interface.\n\nWe can let the code be there for now, so that it is backward compatible. @Kesavan you might want to put in comments in the code saying that they would be removed in the future",
       "parentUuid": "87eb7cc5_07f24431",
+      "range": {
+        "startLine": 733,
+        "startChar": 0,
+        "endLine": 761,
+        "endChar": 2
+      },
+      "revId": "f7bf11d4f6e8e73e9149683bb55e39e5470689c7",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70cb4360_e845dd62",
+        "filename": "topic-exporter.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 761,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-06-25T06:16:00Z",
+      "side": 1,
+      "message": "Addressed the comment",
+      "parentUuid": "d648a2ce_5744d454",
       "range": {
         "startLine": 733,
         "startChar": 0,
