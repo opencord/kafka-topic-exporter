@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "9bab35d7_20ad3a02",
+        "filename": "Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-06-30T13:32:10Z",
+      "side": 1,
+      "message": "Thanks for the comment,the make file changes and vendor directory is added\n,please check.",
+      "parentUuid": "9af29829_ccd79051",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 19
+      },
+      "revId": "f7bf11d4f6e8e73e9149683bb55e39e5470689c7",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "87eb7cc5_07f24431",
         "filename": "topic-exporter.go",
         "patchSetId": 3
