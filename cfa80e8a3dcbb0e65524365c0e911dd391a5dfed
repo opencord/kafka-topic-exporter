@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b384945_be0d6854",
+        "filename": "main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-07-06T07:11:12Z",
+      "side": 1,
+      "message": "we have decided not to go for element specific temperature and have a general device one. See https://docs.google.com/document/d/1wmvSdTmUpGzWa8puVHqx8kbU46qNBWOxCsFAWXCVaR0/edit#heading\u003dh.byowwzwsile4",
+      "revId": "cfa80e8a3dcbb0e65524365c0e911dd391a5dfed",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36f8e839_4f257719",
+        "filename": "main.go",
+        "patchSetId": 5
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-07-06T07:11:12Z",
+      "side": 1,
+      "message": "I woudl have the PowerUsage expressed in watts",
+      "revId": "cfa80e8a3dcbb0e65524365c0e911dd391a5dfed",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
