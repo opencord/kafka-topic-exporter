@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c31ab6c7_94c25822",
+        "filename": "topic-exporter.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 846,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-07-07T07:21:11Z",
+      "side": 1,
+      "message": "formatting, needs more identation",
+      "revId": "9b802e8fa329c654dc1754f529cadc9b492d9979",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fbda322_1807efd8",
+        "filename": "topic-exporter.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 914,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-07-07T07:21:11Z",
+      "side": 1,
+      "message": "formatting, needs more indentation",
+      "revId": "9b802e8fa329c654dc1754f529cadc9b492d9979",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
