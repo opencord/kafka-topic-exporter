@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9d4cbeb6_3b4d3561",
+        "filename": "topic-exporter.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 846,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-07-07T07:42:50Z",
+      "side": 1,
+      "message": "done the formatting",
+      "parentUuid": "c31ab6c7_94c25822",
+      "revId": "9b802e8fa329c654dc1754f529cadc9b492d9979",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6fbda322_1807efd8",
         "filename": "topic-exporter.go",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2020-07-07T07:21:11Z",
       "side": 1,
       "message": "formatting, needs more indentation",
+      "revId": "9b802e8fa329c654dc1754f529cadc9b492d9979",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29bb9c4e_4d4ac9f1",
+        "filename": "topic-exporter.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 914,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-07-07T07:42:50Z",
+      "side": 1,
+      "message": "done the formatting",
+      "parentUuid": "6fbda322_1807efd8",
       "revId": "9b802e8fa329c654dc1754f529cadc9b492d9979",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
