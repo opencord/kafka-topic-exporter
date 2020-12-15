@@ -48,7 +48,8 @@ docker-push:
 	docker push ${DOCKER_IMAGENAME}
 
 test:
-	@echo "No tests available"
+	#@echo "No tests available"
+	go test -race -v -p 1 ./...
 
 clean:
 	@echo "No cleanup available"

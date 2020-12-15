@@ -52,6 +52,8 @@ github.com/opencord/voltha-protos/go/voltha
 # github.com/pierrec/lz4 v0.0.0-20190327172049-315a67e90e41
 github.com/pierrec/lz4
 github.com/pierrec/lz4/internal/xxh32
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/client_golang v1.0.0
 ## explicit
 github.com/prometheus/client_golang/prometheus
@@ -74,6 +76,9 @@ github.com/rcrowley/go-metrics
 # github.com/sirupsen/logrus v1.4.2
 ## explicit
 github.com/sirupsen/logrus
+# github.com/stretchr/testify v1.3.0
+## explicit
+github.com/stretchr/testify/assert
 # golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 ## explicit
 golang.org/x/crypto/md4

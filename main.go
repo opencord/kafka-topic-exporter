@@ -26,6 +26,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	 "gerrit.opencord.org/kafka-topic-exporter/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -230,6 +231,7 @@ func loadConfigFile() Config {
 	return m
 }
 
+
 func main() {
 	// load configuration
 	conf := loadConfigFile()
@@ -237,6 +239,10 @@ func main() {
 	// logger setup
 	logger.Setup(conf.Logger.Host, strings.ToUpper(conf.Logger.LogLevel))
 	logger.Info("Connecting to broker: [%s]", conf.Broker.Host)
+	utils.OnuSNhex = conf.Conv.Onusnhex
+	logger.Info("The utils.OnuSNhex : [%t]", utils.OnuSNhex)
+	logger.Info("The conf.Conv.Onusnformat is : [%t]", conf.Conv.Onusnhex)
+
 
 	go kafkaInit(conf.Broker)
 	runServer(conf.Target)

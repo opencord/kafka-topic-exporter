@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"gerrit.opencord.org/kafka-topic-exporter/common/logger"
+	"gerrit.opencord.org/kafka-topic-exporter/utils"
 	"github.com/golang/protobuf/proto"
 	"github.com/opencord/device-management-interface/go/dmi"
 	"github.com/opencord/voltha-protos/go/voltha"
@@ -1057,204 +1058,207 @@ func exportVolthaEthernetPonStats(data *voltha.MetricInformation) {
 }
 
 func exportVolthaOnuEthernetBridgePortStats(data *voltha.MetricInformation) {
-
+	onuSN := utils.GetOnuSN(data.GetMetadata().GetSerialNo())
 	if (data.GetMetadata().GetContext()["upstream"]) == "True" {
 		// ONU. Extended Ethernet statistics.
+
+
 		volthaOnuBridgePortTxPacketsTotal.WithLabelValues(
 			data.Metadata.GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["packets"]))
 
 		volthaOnuBridgePortTxBytesTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.GetMetadata().GetSerialNo(),
+			onuSN,
 			data.GetMetadata().GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["octets"]))
 
 		volthaOnuBridgePort_64octetTxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["64_octets"]))
 
 		volthaOnuBridgePort_65_127_octetTxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["65_to_127_octets"]))
 
 		volthaOnuBridgePort_128_255_octetTxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["128_to_255_octets"]))
 
 		volthaOnuBridgePort_256_511_octetTxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["256_to_511_octets"]))
 
 		volthaOnuBridgePort_512_1023_octetTxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["512_to_1023_octets"]))
 
 		volthaOnuBridgePort_1024_1518_octetTxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["1024_to_1518_octets"]))
 
 		volthaOnuBridgePortTxMulticastPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["multicast_packets"]))
 
 		volthaOnuBridgePortTxBroadcastPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["broadcast_packets"]))
 
 		volthaOnuBridgePortTxOversizePacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["oversize_packets"]))
 
 		volthaOnuBridgePortTxCrcErrorPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["crc_errored_packets"]))
 
 		volthaOnuBridgePortTxUndersizePacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["undersize_packets"]))
 
 		volthaOnuBridgePortTxDropEventsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["drop_events"]))
 
 	} else {
 
+
 		// ONU. Extended Ethernet statistics.
 		volthaOnuBridgePortRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.GetMetadata().GetSerialNo(),
+			onuSN,
 			data.GetMetadata().GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["packets"]))
 
 		volthaOnuBridgePortRxBytesTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.GetMetadata().GetSerialNo(),
+			onuSN,
 			data.GetMetadata().GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["octets"]))
 
 		volthaOnuBridgePort_64octetRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["64_octets"]))
 
 		volthaOnuBridgePort_65_127_octetRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["65_to_127_octets"]))
 
 		volthaOnuBridgePort_128_255_octetRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["128_to_255_octets"]))
 
 		volthaOnuBridgePort_256_511_octetRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["256_to_511_octets"]))
 
 		volthaOnuBridgePort_512_1023_octetRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["512_to_1023_octets"]))
 
 		volthaOnuBridgePort_1024_1518_octetRxPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["1024_to_1518_octets"]))
 
 		volthaOnuBridgePortRxMulticastPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["multicast_packets"]))
 
 		volthaOnuBridgePortRxBroadcastPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["broadcast_packets"]))
 
 		volthaOnuBridgePortRxOversizePacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["oversize_packets"]))
 
 		volthaOnuBridgePortRxCrcErrorPacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["crc_errored_packets"]))
 
 		volthaOnuBridgePortRxUndersizePacketsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["undersize_packets"]))
 
 		volthaOnuBridgePortRxDropEventsTotal.WithLabelValues(
 			data.GetMetadata().GetLogicalDeviceId(),
-			data.Metadata.GetSerialNo(),
+			onuSN,
 			data.Metadata.GetDeviceId(),
 			data.GetMetadata().GetTitle(),
 		).Add(float64(data.GetMetrics()["drop_events"]))
@@ -1263,9 +1267,10 @@ func exportVolthaOnuEthernetBridgePortStats(data *voltha.MetricInformation) {
 }
 
 func exportVolthaOnuPonOpticalStats(data *voltha.MetricInformation) {
+	onuSN := utils.GetOnuSN(data.GetMetadata().GetSerialNo())
 	VolthaOnuTransmtOpticalPower.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		"NA", // PonID,
@@ -1275,7 +1280,7 @@ func exportVolthaOnuPonOpticalStats(data *voltha.MetricInformation) {
 
 	VolthaOnuReceivedOpticalPower.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		"NA", // PonID,
@@ -1284,46 +1289,48 @@ func exportVolthaOnuPonOpticalStats(data *voltha.MetricInformation) {
 	).Set(float64(data.GetMetrics()["receive_power"]))
 }
 func exportVolthaOnuFecStats(data *voltha.MetricInformation) {
+	onuSN := utils.GetOnuSN(data.GetMetadata().GetSerialNo())
 	volthaOnuFecCorrectedCodewordsTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetTitle(),
 	).Set(float64(data.GetMetrics()["corrected_code_words"]))
 
 	volthaOnuFecCodewordsTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetTitle(),
 	).Set(float64(data.GetMetrics()["total_code_words"]))
 
 	volthaOnuFecCorrectedBytesTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetTitle(),
 	).Set(float64(data.GetMetrics()["corrected_bytes"]))
 
 	volthaOnuFecSecondsTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetTitle(),
 	).Set(float64(data.GetMetrics()["fec_seconds"]))
 
 	volthaOnuFecUncorrectablewordsTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetTitle(),
 	).Set(float64(data.GetMetrics()["uncorrectable_code_words"]))
 }
 func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
+	onuSN := utils.GetOnuSN(data.GetMetadata().GetSerialNo())
 
 	volthaEthernetUniSingleCollisionTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1332,7 +1339,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniMacLayerTramsmitErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1341,7 +1348,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniMultiCollisionTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1350,7 +1357,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniFramestooLongTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1358,7 +1365,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 	).Set(float64(data.GetMetrics()["frames_too_long"]))
 	volthaEthernetUniAlignmentErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1367,7 +1374,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniCarrierErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1375,7 +1382,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 	).Set(float64(data.GetMetrics()["carrier_sense_error_counter"]))
 	volthaEthernetUniExcessiveCollisionErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1384,7 +1391,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniDeferredTxTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1393,7 +1400,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniLateCollisionTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1402,7 +1409,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniBufferOverflowsRxErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1411,7 +1418,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniFcsErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1420,7 +1427,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniSqeErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
@@ -1429,7 +1436,7 @@ func exportVolthaOnuEthernetUniStats(data *voltha.MetricInformation) {
 
 	volthaEthernetUniBufferOverflowsTxErrorTotal.WithLabelValues(
 		data.GetMetadata().GetLogicalDeviceId(),
-		data.GetMetadata().GetSerialNo(),
+		onuSN,
 		data.GetMetadata().GetDeviceId(),
 		data.GetMetadata().GetContext()["intf_id"],
 		data.GetMetadata().GetContext()["portno"],
