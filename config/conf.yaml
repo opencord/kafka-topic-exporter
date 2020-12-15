@@ -18,3 +18,5 @@ target:
   name: http-server
   port: 8080
   description: http target for prometheus
+conv:
+  onusnhex: false
