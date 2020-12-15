@@ -34,10 +34,15 @@ type TargetInfo struct {
 	Description string `yaml: description`
 }
 
+type ConvInfo struct {
+	Onusnhex  bool `yaml: onusnhex`
+}
+
 type Config struct {
 	Broker BrokerInfo `yaml: broker`
 	Logger LoggerInfo `yaml: logger`
 	Target TargetInfo `yaml: "target"`
+	Conv   ConvInfo   `yaml: "conv"`
 }
 
 // KPI Events format
