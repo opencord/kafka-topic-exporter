@@ -1,0 +1,9 @@
+Verified+1: Jenkins Technical User <do-not-reply@opennetworking.org>
+Code-Review+1: Amit Ghosh <amit.ghosh@radisys.com>
+Code-Review+2: Matteo Scandolo <teo@opennetworking.org>
+Code-Review+1: Andrea Campanella <andrea@opennetworking.org>
+Submitted-by: Matteo Scandolo <teo@opennetworking.org>
+Submitted-at: Thu, 07 Jan 2021 19:59:55 +0000
+Reviewed-on: https://gerrit.opencord.org/c/kafka-topic-exporter/+/22151
+Project: kafka-topic-exporter
+Branch: refs/heads/master
