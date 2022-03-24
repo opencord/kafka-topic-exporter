@@ -23,7 +23,7 @@ import (
 	"gerrit.opencord.org/kafka-topic-exporter/utils"
 	"github.com/golang/protobuf/proto"
 	"github.com/opencord/device-management-interface/go/dmi"
-	"github.com/opencord/voltha-protos/go/voltha"
+	"github.com/opencord/voltha-protos/v5/go/voltha"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 )

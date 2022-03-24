@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -21,6 +23,108 @@ var _ = math.Inf
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+
+type GetSoftwareVersionInformationResponse_Reason int32
+
+const (
+	GetSoftwareVersionInformationResponse_UNDEFINED_REASON   GetSoftwareVersionInformationResponse_Reason = 0
+	GetSoftwareVersionInformationResponse_UNKNOWN_DEVICE     GetSoftwareVersionInformationResponse_Reason = 1
+	GetSoftwareVersionInformationResponse_INTERNAL_ERROR     GetSoftwareVersionInformationResponse_Reason = 2
+	GetSoftwareVersionInformationResponse_DEVICE_UNREACHABLE GetSoftwareVersionInformationResponse_Reason = 3
+)
+
+var GetSoftwareVersionInformationResponse_Reason_name = map[int32]string{
+	0: "UNDEFINED_REASON",
+	1: "UNKNOWN_DEVICE",
+	2: "INTERNAL_ERROR",
+	3: "DEVICE_UNREACHABLE",
+}
+
+var GetSoftwareVersionInformationResponse_Reason_value = map[string]int32{
+	"UNDEFINED_REASON":   0,
+	"UNKNOWN_DEVICE":     1,
+	"INTERNAL_ERROR":     2,
+	"DEVICE_UNREACHABLE": 3,
+}
+
+func (x GetSoftwareVersionInformationResponse_Reason) String() string {
+	return proto.EnumName(GetSoftwareVersionInformationResponse_Reason_name, int32(x))
+}
+
+func (GetSoftwareVersionInformationResponse_Reason) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{1, 0}
+}
+
+type ConfigResponse_Reason int32
+
+const (
+	ConfigResponse_UNDEFINED_REASON              ConfigResponse_Reason = 0
+	ConfigResponse_UNKNOWN_DEVICE                ConfigResponse_Reason = 1
+	ConfigResponse_INTERNAL_ERROR                ConfigResponse_Reason = 2
+	ConfigResponse_ERROR_FETCHING_CONFIG         ConfigResponse_Reason = 3
+	ConfigResponse_INVALID_CONFIG                ConfigResponse_Reason = 4
+	ConfigResponse_OPERATION_ALREADY_IN_PROGRESS ConfigResponse_Reason = 5
+	ConfigResponse_DEVICE_UNREACHABLE            ConfigResponse_Reason = 6
+)
+
+var ConfigResponse_Reason_name = map[int32]string{
+	0: "UNDEFINED_REASON",
+	1: "UNKNOWN_DEVICE",
+	2: "INTERNAL_ERROR",
+	3: "ERROR_FETCHING_CONFIG",
+	4: "INVALID_CONFIG",
+	5: "OPERATION_ALREADY_IN_PROGRESS",
+	6: "DEVICE_UNREACHABLE",
+}
+
+var ConfigResponse_Reason_value = map[string]int32{
+	"UNDEFINED_REASON":              0,
+	"UNKNOWN_DEVICE":                1,
+	"INTERNAL_ERROR":                2,
+	"ERROR_FETCHING_CONFIG":         3,
+	"INVALID_CONFIG":                4,
+	"OPERATION_ALREADY_IN_PROGRESS": 5,
+	"DEVICE_UNREACHABLE":            6,
+}
+
+func (x ConfigResponse_Reason) String() string {
+	return proto.EnumName(ConfigResponse_Reason_name, int32(x))
+}
+
+func (ConfigResponse_Reason) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{4, 0}
+}
+
+type StartupConfigInfoResponse_Reason int32
+
+const (
+	StartupConfigInfoResponse_UNDEFINED_REASON   StartupConfigInfoResponse_Reason = 0
+	StartupConfigInfoResponse_UNKNOWN_DEVICE     StartupConfigInfoResponse_Reason = 1
+	StartupConfigInfoResponse_INTERNAL_ERROR     StartupConfigInfoResponse_Reason = 2
+	StartupConfigInfoResponse_DEVICE_UNREACHABLE StartupConfigInfoResponse_Reason = 3
+)
+
+var StartupConfigInfoResponse_Reason_name = map[int32]string{
+	0: "UNDEFINED_REASON",
+	1: "UNKNOWN_DEVICE",
+	2: "INTERNAL_ERROR",
+	3: "DEVICE_UNREACHABLE",
+}
+
+var StartupConfigInfoResponse_Reason_value = map[string]int32{
+	"UNDEFINED_REASON":   0,
+	"UNKNOWN_DEVICE":     1,
+	"INTERNAL_ERROR":     2,
+	"DEVICE_UNREACHABLE": 3,
+}
+
+func (x StartupConfigInfoResponse_Reason) String() string {
+	return proto.EnumName(StartupConfigInfoResponse_Reason_name, int32(x))
+}
+
+func (StartupConfigInfoResponse_Reason) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{6, 0}
+}
 
 type SoftwareVersionInformation struct {
 	ActiveVersions       []*ImageVersion `protobuf:"bytes,1,rep,name=active_versions,json=activeVersions,proto3" json:"active_versions,omitempty"`
@@ -69,6 +173,69 @@ func (m *SoftwareVersionInformation) GetStandbyVersions() []*ImageVersion {
 	return nil
 }
 
+type GetSoftwareVersionInformationResponse struct {
+	Status               Status                                       `protobuf:"varint,1,opt,name=status,proto3,enum=dmi.Status" json:"status,omitempty"`
+	Reason               GetSoftwareVersionInformationResponse_Reason `protobuf:"varint,2,opt,name=reason,proto3,enum=dmi.GetSoftwareVersionInformationResponse_Reason" json:"reason,omitempty"`
+	Info                 *SoftwareVersionInformation                  `protobuf:"bytes,3,opt,name=info,proto3" json:"info,omitempty"`
+	ReasonDetail         string                                       `protobuf:"bytes,4,opt,name=reason_detail,json=reasonDetail,proto3" json:"reason_detail,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                                     `json:"-"`
+	XXX_unrecognized     []byte                                       `json:"-"`
+	XXX_sizecache        int32                                        `json:"-"`
+}
+
+func (m *GetSoftwareVersionInformationResponse) Reset()         { *m = GetSoftwareVersionInformationResponse{} }
+func (m *GetSoftwareVersionInformationResponse) String() string { return proto.CompactTextString(m) }
+func (*GetSoftwareVersionInformationResponse) ProtoMessage()    {}
+func (*GetSoftwareVersionInformationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{1}
+}
+
+func (m *GetSoftwareVersionInformationResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSoftwareVersionInformationResponse.Unmarshal(m, b)
+}
+func (m *GetSoftwareVersionInformationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSoftwareVersionInformationResponse.Marshal(b, m, deterministic)
+}
+func (m *GetSoftwareVersionInformationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSoftwareVersionInformationResponse.Merge(m, src)
+}
+func (m *GetSoftwareVersionInformationResponse) XXX_Size() int {
+	return xxx_messageInfo_GetSoftwareVersionInformationResponse.Size(m)
+}
+func (m *GetSoftwareVersionInformationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSoftwareVersionInformationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSoftwareVersionInformationResponse proto.InternalMessageInfo
+
+func (m *GetSoftwareVersionInformationResponse) GetStatus() Status {
+	if m != nil {
+		return m.Status
+	}
+	return Status_UNDEFINED_STATUS
+}
+
+func (m *GetSoftwareVersionInformationResponse) GetReason() GetSoftwareVersionInformationResponse_Reason {
+	if m != nil {
+		return m.Reason
+	}
+	return GetSoftwareVersionInformationResponse_UNDEFINED_REASON
+}
+
+func (m *GetSoftwareVersionInformationResponse) GetInfo() *SoftwareVersionInformation {
+	if m != nil {
+		return m.Info
+	}
+	return nil
+}
+
+func (m *GetSoftwareVersionInformationResponse) GetReasonDetail() string {
+	if m != nil {
+		return m.ReasonDetail
+	}
+	return ""
+}
+
 type DownloadImageRequest struct {
 	DeviceUuid           *Uuid             `protobuf:"bytes,1,opt,name=device_uuid,json=deviceUuid,proto3" json:"device_uuid,omitempty"`
 	ImageInfo            *ImageInformation `protobuf:"bytes,2,opt,name=image_info,json=imageInfo,proto3" json:"image_info,omitempty"`
@@ -81,7 +248,7 @@ func (m *DownloadImageRequest) Reset()         { *m = DownloadImageRequest{} }
 func (m *DownloadImageRequest) String() string { return proto.CompactTextString(m) }
 func (*DownloadImageRequest) ProtoMessage()    {}
 func (*DownloadImageRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_000929e4bec891d7, []int{1}
+	return fileDescriptor_000929e4bec891d7, []int{2}
 }
 
 func (m *DownloadImageRequest) XXX_Unmarshal(b []byte) error {
@@ -116,40 +283,294 @@ func (m *DownloadImageRequest) GetImageInfo() *ImageInformation {
 	return nil
 }
 
+type ConfigRequest struct {
+	DeviceUuid *Uuid `protobuf:"bytes,1,opt,name=device_uuid,json=deviceUuid,proto3" json:"device_uuid,omitempty"`
+	// Location of the configuration file, authentication (user/pass) if any should be in the url string
+	// The config_url would contain the protocol, credentials, the IP address/DNS of the server and the path of the file
+	// e.g. sftp://download_user:download_pass@192.168.0.1:22/OLT-configs/config-v1.2.3.xml
+	ConfigUrl            string   `protobuf:"bytes,2,opt,name=config_url,json=configUrl,proto3" json:"config_url,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConfigRequest) Reset()         { *m = ConfigRequest{} }
+func (m *ConfigRequest) String() string { return proto.CompactTextString(m) }
+func (*ConfigRequest) ProtoMessage()    {}
+func (*ConfigRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{3}
+}
+
+func (m *ConfigRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConfigRequest.Unmarshal(m, b)
+}
+func (m *ConfigRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConfigRequest.Marshal(b, m, deterministic)
+}
+func (m *ConfigRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConfigRequest.Merge(m, src)
+}
+func (m *ConfigRequest) XXX_Size() int {
+	return xxx_messageInfo_ConfigRequest.Size(m)
+}
+func (m *ConfigRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConfigRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConfigRequest proto.InternalMessageInfo
+
+func (m *ConfigRequest) GetDeviceUuid() *Uuid {
+	if m != nil {
+		return m.DeviceUuid
+	}
+	return nil
+}
+
+func (m *ConfigRequest) GetConfigUrl() string {
+	if m != nil {
+		return m.ConfigUrl
+	}
+	return ""
+}
+
+type ConfigResponse struct {
+	Status               Status                `protobuf:"varint,1,opt,name=status,proto3,enum=dmi.Status" json:"status,omitempty"`
+	Reason               ConfigResponse_Reason `protobuf:"varint,2,opt,name=reason,proto3,enum=dmi.ConfigResponse_Reason" json:"reason,omitempty"`
+	ReasonDetail         string                `protobuf:"bytes,3,opt,name=reason_detail,json=reasonDetail,proto3" json:"reason_detail,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
+}
+
+func (m *ConfigResponse) Reset()         { *m = ConfigResponse{} }
+func (m *ConfigResponse) String() string { return proto.CompactTextString(m) }
+func (*ConfigResponse) ProtoMessage()    {}
+func (*ConfigResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{4}
+}
+
+func (m *ConfigResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConfigResponse.Unmarshal(m, b)
+}
+func (m *ConfigResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConfigResponse.Marshal(b, m, deterministic)
+}
+func (m *ConfigResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConfigResponse.Merge(m, src)
+}
+func (m *ConfigResponse) XXX_Size() int {
+	return xxx_messageInfo_ConfigResponse.Size(m)
+}
+func (m *ConfigResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConfigResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConfigResponse proto.InternalMessageInfo
+
+func (m *ConfigResponse) GetStatus() Status {
+	if m != nil {
+		return m.Status
+	}
+	return Status_UNDEFINED_STATUS
+}
+
+func (m *ConfigResponse) GetReason() ConfigResponse_Reason {
+	if m != nil {
+		return m.Reason
+	}
+	return ConfigResponse_UNDEFINED_REASON
+}
+
+func (m *ConfigResponse) GetReasonDetail() string {
+	if m != nil {
+		return m.ReasonDetail
+	}
+	return ""
+}
+
+type StartupConfigInfoRequest struct {
+	DeviceUuid           *Uuid    `protobuf:"bytes,1,opt,name=device_uuid,json=deviceUuid,proto3" json:"device_uuid,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StartupConfigInfoRequest) Reset()         { *m = StartupConfigInfoRequest{} }
+func (m *StartupConfigInfoRequest) String() string { return proto.CompactTextString(m) }
+func (*StartupConfigInfoRequest) ProtoMessage()    {}
+func (*StartupConfigInfoRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{5}
+}
+
+func (m *StartupConfigInfoRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StartupConfigInfoRequest.Unmarshal(m, b)
+}
+func (m *StartupConfigInfoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StartupConfigInfoRequest.Marshal(b, m, deterministic)
+}
+func (m *StartupConfigInfoRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartupConfigInfoRequest.Merge(m, src)
+}
+func (m *StartupConfigInfoRequest) XXX_Size() int {
+	return xxx_messageInfo_StartupConfigInfoRequest.Size(m)
+}
+func (m *StartupConfigInfoRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_StartupConfigInfoRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StartupConfigInfoRequest proto.InternalMessageInfo
+
+func (m *StartupConfigInfoRequest) GetDeviceUuid() *Uuid {
+	if m != nil {
+		return m.DeviceUuid
+	}
+	return nil
+}
+
+type StartupConfigInfoResponse struct {
+	Status Status                           `protobuf:"varint,1,opt,name=status,proto3,enum=dmi.Status" json:"status,omitempty"`
+	Reason StartupConfigInfoResponse_Reason `protobuf:"varint,2,opt,name=reason,proto3,enum=dmi.StartupConfigInfoResponse_Reason" json:"reason,omitempty"`
+	// The config_url is an optional attribute, the device manager could return the location from
+	// where the config was downloaded. Also it would not be present/empty for a fresh device into which the
+	// startup config would have been installed in the factory.
+	ConfigUrl string `protobuf:"bytes,3,opt,name=config_url,json=configUrl,proto3" json:"config_url,omitempty"`
+	// The version of the startup configuration. It is recommended to use semVer, but the DM implementations
+	// and operators could choose any other format as well.
+	Version              string   `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`
+	ReasonDetail         string   `protobuf:"bytes,5,opt,name=reason_detail,json=reasonDetail,proto3" json:"reason_detail,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StartupConfigInfoResponse) Reset()         { *m = StartupConfigInfoResponse{} }
+func (m *StartupConfigInfoResponse) String() string { return proto.CompactTextString(m) }
+func (*StartupConfigInfoResponse) ProtoMessage()    {}
+func (*StartupConfigInfoResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_000929e4bec891d7, []int{6}
+}
+
+func (m *StartupConfigInfoResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StartupConfigInfoResponse.Unmarshal(m, b)
+}
+func (m *StartupConfigInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StartupConfigInfoResponse.Marshal(b, m, deterministic)
+}
+func (m *StartupConfigInfoResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartupConfigInfoResponse.Merge(m, src)
+}
+func (m *StartupConfigInfoResponse) XXX_Size() int {
+	return xxx_messageInfo_StartupConfigInfoResponse.Size(m)
+}
+func (m *StartupConfigInfoResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_StartupConfigInfoResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StartupConfigInfoResponse proto.InternalMessageInfo
+
+func (m *StartupConfigInfoResponse) GetStatus() Status {
+	if m != nil {
+		return m.Status
+	}
+	return Status_UNDEFINED_STATUS
+}
+
+func (m *StartupConfigInfoResponse) GetReason() StartupConfigInfoResponse_Reason {
+	if m != nil {
+		return m.Reason
+	}
+	return StartupConfigInfoResponse_UNDEFINED_REASON
+}
+
+func (m *StartupConfigInfoResponse) GetConfigUrl() string {
+	if m != nil {
+		return m.ConfigUrl
+	}
+	return ""
+}
+
+func (m *StartupConfigInfoResponse) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *StartupConfigInfoResponse) GetReasonDetail() string {
+	if m != nil {
+		return m.ReasonDetail
+	}
+	return ""
+}
+
 func init() {
+	proto.RegisterEnum("dmi.GetSoftwareVersionInformationResponse_Reason", GetSoftwareVersionInformationResponse_Reason_name, GetSoftwareVersionInformationResponse_Reason_value)
+	proto.RegisterEnum("dmi.ConfigResponse_Reason", ConfigResponse_Reason_name, ConfigResponse_Reason_value)
+	proto.RegisterEnum("dmi.StartupConfigInfoResponse_Reason", StartupConfigInfoResponse_Reason_name, StartupConfigInfoResponse_Reason_value)
 	proto.RegisterType((*SoftwareVersionInformation)(nil), "dmi.SoftwareVersionInformation")
+	proto.RegisterType((*GetSoftwareVersionInformationResponse)(nil), "dmi.GetSoftwareVersionInformationResponse")
 	proto.RegisterType((*DownloadImageRequest)(nil), "dmi.DownloadImageRequest")
+	proto.RegisterType((*ConfigRequest)(nil), "dmi.ConfigRequest")
+	proto.RegisterType((*ConfigResponse)(nil), "dmi.ConfigResponse")
+	proto.RegisterType((*StartupConfigInfoRequest)(nil), "dmi.StartupConfigInfoRequest")
+	proto.RegisterType((*StartupConfigInfoResponse)(nil), "dmi.StartupConfigInfoResponse")
 }
 
 func init() { proto.RegisterFile("dmi/sw_management_service.proto", fileDescriptor_000929e4bec891d7) }
 
 var fileDescriptor_000929e4bec891d7 = []byte{
-	// 387 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xd1, 0xaf, 0xd2, 0x30,
-	0x18, 0xc5, 0x33, 0x48, 0x4c, 0x28, 0x22, 0xd8, 0x60, 0x82, 0x7b, 0x81, 0xf0, 0x44, 0x4c, 0xd8,
-	0x0c, 0xf0, 0xa2, 0x18, 0x13, 0x0d, 0x51, 0x79, 0xd0, 0x87, 0x4d, 0x7d, 0xf0, 0x65, 0x29, 0xeb,
-	0xb7, 0xd1, 0xc4, 0xb6, 0xd8, 0x76, 0x9b, 0xfe, 0x23, 0x3e, 0xf9, 0xc7, 0x9a, 0xb5, 0xc3, 0x79,
-	0xef, 0xe5, 0xde, 0xdc, 0xb7, 0xed, 0xf4, 0xfc, 0xbe, 0xf6, 0x9c, 0x7c, 0x68, 0x4a, 0x39, 0x0b,
-	0x75, 0x95, 0x70, 0x22, 0x48, 0x0e, 0x1c, 0x84, 0x49, 0x34, 0xa8, 0x92, 0xa5, 0x10, 0x9c, 0x94,
-	0x34, 0x12, 0x77, 0x29, 0x67, 0xfe, 0xc3, 0xda, 0x75, 0xac, 0x9c, 0xe4, 0xe3, 0x86, 0x61, 0x9c,
-	0xe4, 0x8d, 0x6d, 0xfe, 0xdb, 0x43, 0x7e, 0x2c, 0x33, 0x53, 0x11, 0x05, 0x5f, 0x41, 0x69, 0x26,
-	0xc5, 0x5e, 0x64, 0x52, 0x71, 0x62, 0x98, 0x14, 0xf8, 0x25, 0x1a, 0x92, 0xd4, 0xb0, 0x12, 0x92,
-	0xd2, 0x1d, 0xea, 0x89, 0x37, 0xeb, 0x2e, 0xfa, 0xab, 0xc7, 0x01, 0xe5, 0x2c, 0xd8, 0xd7, 0x93,
-	0x1a, 0x2c, 0x7a, 0xe4, 0x9c, 0xcd, 0xaf, 0xc6, 0xaf, 0xd0, 0x48, 0x1b, 0x22, 0xe8, 0xe1, 0x57,
-	0x0b, 0x77, 0x6e, 0x83, 0x87, 0x8d, 0xf5, 0x4c, 0xcf, 0x7f, 0xa2, 0xf1, 0x4e, 0x56, 0xe2, 0xbb,
-	0x24, 0xd4, 0x1a, 0x23, 0xf8, 0x51, 0x80, 0x36, 0xf8, 0x19, 0xea, 0x53, 0xa8, 0x73, 0x26, 0x45,
-	0xc1, 0xe8, 0xc4, 0x9b, 0x79, 0x8b, 0xfe, 0xaa, 0x67, 0x07, 0x7e, 0x29, 0x18, 0x8d, 0x90, 0x3b,
-	0xad, 0xbf, 0xf1, 0x06, 0x21, 0x9b, 0x35, 0x61, 0x22, 0x93, 0x93, 0x8e, 0xb5, 0x3e, 0x69, 0xef,
-	0xfe, 0x2f, 0x68, 0xd4, 0x63, 0x67, 0x65, 0xf5, 0xa7, 0x83, 0xa6, 0x9f, 0x48, 0x1d, 0xe5, 0x5c,
-	0xcc, 0xc7, 0x7f, 0x25, 0xc7, 0xae, 0x63, 0xfc, 0x0e, 0xe1, 0xf7, 0x60, 0xae, 0x15, 0x87, 0x87,
-	0x76, 0xf6, 0x07, 0xa2, 0x68, 0xad, 0xee, 0x77, 0xfe, 0xd4, 0x0a, 0x77, 0xf4, 0xfb, 0x1a, 0x0d,
-	0xae, 0xa4, 0xc4, 0x4f, 0x2d, 0x71, 0x29, 0xb9, 0x3f, 0x6a, 0x5f, 0x1e, 0x1b, 0x62, 0x0a, 0xfd,
-	0xdc, 0xc3, 0x1b, 0x34, 0x78, 0x53, 0xb7, 0x4e, 0x0c, 0x38, 0xfe, 0xc6, 0x13, 0x2e, 0x51, 0x5b,
-	0x34, 0x8e, 0xa0, 0x04, 0x65, 0x3e, 0xcb, 0xd8, 0xd5, 0x7e, 0x7f, 0xf8, 0xed, 0xf6, 0xdb, 0x8b,
-	0x9c, 0x99, 0x63, 0x71, 0x08, 0x52, 0xc9, 0x43, 0x79, 0x02, 0x91, 0x4a, 0x45, 0x43, 0x57, 0xfb,
-	0xb2, 0xdd, 0xc7, 0x25, 0x13, 0x06, 0x54, 0x46, 0x52, 0x08, 0xcb, 0x75, 0x98, 0xcb, 0x90, 0x72,
-	0x76, 0x78, 0x60, 0xb7, 0x6e, 0xfd, 0x37, 0x00, 0x00, 0xff, 0xff, 0xd5, 0x4a, 0xed, 0x39, 0xbf,
-	0x02, 0x00, 0x00,
+	// 804 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xed, 0x6e, 0xe3, 0x44,
+	0x14, 0xc5, 0x71, 0x37, 0x28, 0x37, 0xdb, 0xd6, 0x3b, 0x74, 0x51, 0x1a, 0x54, 0x5a, 0xbc, 0x5a,
+	0xa9, 0x5a, 0x69, 0x93, 0x25, 0xdd, 0x3f, 0xb0, 0x80, 0xe4, 0x8d, 0xdd, 0xd4, 0xa2, 0x38, 0xcb,
+	0xb8, 0x29, 0x62, 0x85, 0x18, 0x4d, 0xe3, 0x49, 0x76, 0xa4, 0xda, 0x13, 0xec, 0x71, 0x0a, 0x2f,
+	0xc2, 0x73, 0xf0, 0x02, 0xfc, 0xe0, 0x05, 0x90, 0x78, 0x23, 0xe4, 0x19, 0x87, 0x90, 0x2f, 0xb4,
+	0xad, 0xd0, 0xfe, 0xb3, 0xef, 0xdc, 0x73, 0x66, 0xe6, 0x9e, 0x7b, 0xcf, 0xc0, 0x61, 0x14, 0xf3,
+	0x76, 0x76, 0x43, 0x62, 0x9a, 0xd0, 0x31, 0x8b, 0x59, 0x22, 0x49, 0xc6, 0xd2, 0x29, 0x1f, 0xb2,
+	0xd6, 0x24, 0x15, 0x52, 0x20, 0x33, 0x8a, 0x79, 0xf3, 0x41, 0x91, 0x35, 0x14, 0x71, 0x2c, 0x92,
+	0x4c, 0xc7, 0x9b, 0xf7, 0x8b, 0xd0, 0x9b, 0x9b, 0xf2, 0x0f, 0x95, 0x34, 0x3c, 0xa6, 0xe3, 0x12,
+	0x69, 0xff, 0x6a, 0x40, 0x33, 0x14, 0x23, 0x79, 0x43, 0x53, 0x76, 0xc9, 0xd2, 0x8c, 0x8b, 0xc4,
+	0x4f, 0x46, 0x22, 0x8d, 0xa9, 0xe4, 0x22, 0x41, 0x9f, 0xc3, 0x2e, 0x1d, 0x4a, 0x3e, 0x65, 0x64,
+	0xaa, 0x17, 0xb3, 0x86, 0x71, 0x64, 0x1e, 0xd7, 0x3b, 0x0f, 0x5a, 0x51, 0xcc, 0x5b, 0x7e, 0xc1,
+	0x54, 0xc2, 0xf0, 0x8e, 0xce, 0x2c, 0x7f, 0x33, 0xf4, 0x05, 0x58, 0x99, 0xa4, 0x49, 0x74, 0xf5,
+	0xcb, 0x1c, 0x5c, 0xd9, 0x04, 0xde, 0x2d, 0x53, 0x67, 0x68, 0xfb, 0xaf, 0x0a, 0x3c, 0xee, 0x31,
+	0xb9, 0xf9, 0x6c, 0x98, 0x65, 0x13, 0x91, 0x64, 0x0c, 0x3d, 0x82, 0x6a, 0x26, 0xa9, 0xcc, 0x8b,
+	0xa3, 0x19, 0xc7, 0x3b, 0x9d, 0xba, 0x62, 0x0f, 0x55, 0x08, 0x97, 0x4b, 0xc8, 0x87, 0x6a, 0xca,
+	0x68, 0x26, 0x92, 0x46, 0x45, 0x25, 0x7d, 0xaa, 0x92, 0xde, 0x6a, 0x83, 0x16, 0x56, 0x40, 0x5c,
+	0x12, 0xa0, 0x13, 0xd8, 0xe2, 0xc9, 0x48, 0x34, 0xcc, 0x23, 0xe3, 0xb8, 0xde, 0x39, 0xd4, 0xbb,
+	0x6d, 0x66, 0x51, 0xc9, 0xe8, 0x11, 0x6c, 0x6b, 0x38, 0x89, 0x98, 0xa4, 0xfc, 0xba, 0xb1, 0x75,
+	0x64, 0x1c, 0xd7, 0xf0, 0x7d, 0x1d, 0x74, 0x55, 0xcc, 0xfe, 0x11, 0xaa, 0x7a, 0x2f, 0xb4, 0x07,
+	0xd6, 0x20, 0x70, 0xbd, 0x53, 0x3f, 0xf0, 0x5c, 0x82, 0x3d, 0x27, 0xec, 0x07, 0xd6, 0x7b, 0x08,
+	0xc1, 0xce, 0x20, 0xf8, 0x3a, 0xe8, 0x7f, 0x17, 0x10, 0xd7, 0xbb, 0xf4, 0xbb, 0x9e, 0x65, 0x14,
+	0x31, 0x3f, 0xb8, 0xf0, 0x70, 0xe0, 0x9c, 0x13, 0x0f, 0xe3, 0x3e, 0xb6, 0x2a, 0xe8, 0x43, 0x40,
+	0x7a, 0x9d, 0x0c, 0x02, 0xec, 0x39, 0xdd, 0x33, 0xe7, 0xe5, 0xb9, 0x67, 0x99, 0xf6, 0xcf, 0xb0,
+	0xe7, 0x8a, 0x9b, 0xe4, 0x5a, 0xd0, 0x48, 0x15, 0x1f, 0xb3, 0x9f, 0x72, 0x96, 0x49, 0xf4, 0x04,
+	0xea, 0x11, 0x2b, 0xda, 0x89, 0xe4, 0x39, 0x8f, 0x54, 0x19, 0xeb, 0x9d, 0x9a, 0xba, 0xd8, 0x20,
+	0xe7, 0x11, 0x06, 0xbd, 0x5a, 0x7c, 0xa3, 0xe7, 0x00, 0xaa, 0x7f, 0x88, 0xaa, 0x41, 0x45, 0xa5,
+	0x3e, 0x9c, 0xeb, 0xf9, 0xef, 0x9b, 0xd7, 0xf8, 0x2c, 0x62, 0xbf, 0x86, 0xed, 0xae, 0x48, 0x46,
+	0x7c, 0x7c, 0x97, 0x2d, 0x0f, 0x00, 0x86, 0x0a, 0x4c, 0xf2, 0xf4, 0x5a, 0x6d, 0x59, 0xc3, 0x35,
+	0x1d, 0x19, 0xa4, 0xd7, 0xf6, 0x1f, 0x15, 0xd8, 0x99, 0x91, 0xdf, 0xa6, 0x25, 0x3a, 0x4b, 0x2d,
+	0xd1, 0x54, 0x49, 0x8b, 0x4c, 0xcb, 0xda, 0xaf, 0xc8, 0x68, 0xae, 0x91, 0xf1, 0x37, 0xe3, 0x7f,
+	0xd2, 0x71, 0x1f, 0x1e, 0xaa, 0x4f, 0x72, 0xea, 0x5d, 0x74, 0xcf, 0xfc, 0xa0, 0x47, 0xba, 0xfd,
+	0xe0, 0xd4, 0xef, 0x59, 0xa6, 0x4e, 0xbf, 0x74, 0xce, 0x7d, 0x77, 0x16, 0xdb, 0x42, 0x9f, 0xc0,
+	0x41, 0xff, 0x95, 0x87, 0x9d, 0x0b, 0xbf, 0x1f, 0x10, 0xe7, 0x1c, 0x7b, 0x8e, 0xfb, 0x3d, 0xf1,
+	0x03, 0xf2, 0x0a, 0xf7, 0x7b, 0xd8, 0x0b, 0x43, 0xeb, 0xde, 0x86, 0xce, 0xa8, 0xda, 0xa7, 0xd0,
+	0x08, 0x25, 0x4d, 0x65, 0x3e, 0xd1, 0xf7, 0x2f, 0x44, 0xbb, 0x83, 0x54, 0xf6, 0xef, 0x15, 0xd8,
+	0x5f, 0x43, 0x74, 0x1b, 0x59, 0xbe, 0x5c, 0x92, 0xe5, 0xf1, 0x2c, 0x69, 0x3d, 0xe9, 0xb2, 0x42,
+	0x8b, 0xcd, 0x62, 0x2e, 0x35, 0x0b, 0x6a, 0xc0, 0xfb, 0xa5, 0x19, 0x95, 0x13, 0x38, 0xfb, 0x5d,
+	0x95, 0xf6, 0xde, 0xbb, 0x9f, 0xd0, 0xce, 0x9f, 0x26, 0x1c, 0x06, 0xb4, 0xb0, 0xd1, 0x99, 0xa3,
+	0x7c, 0xf3, 0x8f, 0xe7, 0x87, 0xda, 0xf2, 0xd1, 0xb7, 0x80, 0x56, 0x7d, 0x0b, 0xed, 0xaa, 0x32,
+	0x9d, 0xd1, 0x34, 0x2a, 0xa2, 0xbe, 0xdb, 0x7c, 0xf2, 0xf6, 0x0e, 0x87, 0xbe, 0x82, 0xed, 0x05,
+	0x63, 0x40, 0xfb, 0x0a, 0xbc, 0xce, 0x2c, 0x9a, 0xd6, 0x7c, 0xd8, 0xb5, 0x72, 0xcf, 0x0c, 0xf4,
+	0x1c, 0xb6, 0x9d, 0xc2, 0xfc, 0xa9, 0x64, 0x1a, 0xbf, 0x72, 0x9a, 0x75, 0xa8, 0x17, 0xb0, 0x87,
+	0xd9, 0x94, 0xa5, 0xf2, 0x42, 0x84, 0xda, 0xfd, 0x6f, 0x01, 0xee, 0x41, 0x73, 0x30, 0x89, 0xa8,
+	0x64, 0x0b, 0x9d, 0x91, 0xa7, 0xfa, 0xdd, 0x42, 0x0b, 0xb3, 0xac, 0x0f, 0xfe, 0xc1, 0x9a, 0xf9,
+	0x7e, 0x66, 0xa0, 0x1f, 0xe0, 0xa3, 0xa2, 0x48, 0x6b, 0x58, 0x8a, 0x4a, 0xa1, 0x83, 0x4d, 0xed,
+	0xa7, 0x49, 0x3f, 0xfe, 0xef, 0xee, 0x7c, 0xf9, 0xe2, 0xf5, 0x67, 0x63, 0x2e, 0xdf, 0xe4, 0x57,
+	0xad, 0xa1, 0x88, 0xdb, 0x62, 0xc2, 0x92, 0xa1, 0x48, 0xa3, 0xb6, 0x1e, 0x99, 0xa7, 0xf3, 0x07,
+	0xfd, 0x29, 0x4f, 0x24, 0x4b, 0x47, 0x74, 0xc8, 0xda, 0xd3, 0x93, 0xf6, 0x58, 0xb4, 0xa3, 0x98,
+	0x5f, 0x55, 0xd5, 0x1b, 0x7d, 0xf2, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0xdd, 0xa9, 0x07, 0xea,
+	0x00, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -165,7 +586,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type NativeSoftwareManagementServiceClient interface {
 	// Get the software version information of the Active and Standby images
-	GetSoftwareVersion(ctx context.Context, in *HardwareID, opts ...grpc.CallOption) (*SoftwareVersionInformation, error)
+	GetSoftwareVersion(ctx context.Context, in *HardwareID, opts ...grpc.CallOption) (*GetSoftwareVersionInformationResponse, error)
 	// Downloads and installs the image in the standby partition, returns the status/progress of the Install
 	DownloadImage(ctx context.Context, in *DownloadImageRequest, opts ...grpc.CallOption) (NativeSoftwareManagementService_DownloadImageClient, error)
 	// Activates and runs the OLT with the image in the standby partition. If things are fine this image will
@@ -173,8 +594,12 @@ type NativeSoftwareManagementServiceClient interface {
 	// Any possibly required (sub-)steps like "commit" are left to the "Device Manager"
 	ActivateImage(ctx context.Context, in *HardwareID, opts ...grpc.CallOption) (NativeSoftwareManagementService_ActivateImageClient, error)
 	// Marks the image in the Standby as Active and reboots the device, so that it boots from that image which was in the standby.
-	// This API is to be used if operator wants to go back to the pervious software
+	// This API is to be used if operator wants to go back to the previous software
 	RevertToStandbyImage(ctx context.Context, in *HardwareID, opts ...grpc.CallOption) (NativeSoftwareManagementService_RevertToStandbyImageClient, error)
+	// This API can be used to let the devices pickup their properitary configuration which they need at startup.
+	UpdateStartupConfiguration(ctx context.Context, in *ConfigRequest, opts ...grpc.CallOption) (NativeSoftwareManagementService_UpdateStartupConfigurationClient, error)
+	// This API can be used to retrieve information about the current startup configuration that a device is using
+	GetStartupConfigurationInfo(ctx context.Context, in *StartupConfigInfoRequest, opts ...grpc.CallOption) (*StartupConfigInfoResponse, error)
 }
 
 type nativeSoftwareManagementServiceClient struct {
@@ -185,8 +610,8 @@ func NewNativeSoftwareManagementServiceClient(cc *grpc.ClientConn) NativeSoftwar
 	return &nativeSoftwareManagementServiceClient{cc}
 }
 
-func (c *nativeSoftwareManagementServiceClient) GetSoftwareVersion(ctx context.Context, in *HardwareID, opts ...grpc.CallOption) (*SoftwareVersionInformation, error) {
-	out := new(SoftwareVersionInformation)
+func (c *nativeSoftwareManagementServiceClient) GetSoftwareVersion(ctx context.Context, in *HardwareID, opts ...grpc.CallOption) (*GetSoftwareVersionInformationResponse, error) {
+	out := new(GetSoftwareVersionInformationResponse)
 	err := c.cc.Invoke(ctx, "/dmi.NativeSoftwareManagementService/GetSoftwareVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -290,10 +715,51 @@ func (x *nativeSoftwareManagementServiceRevertToStandbyImageClient) Recv() (*Ima
 	return m, nil
 }
 
+func (c *nativeSoftwareManagementServiceClient) UpdateStartupConfiguration(ctx context.Context, in *ConfigRequest, opts ...grpc.CallOption) (NativeSoftwareManagementService_UpdateStartupConfigurationClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_NativeSoftwareManagementService_serviceDesc.Streams[3], "/dmi.NativeSoftwareManagementService/UpdateStartupConfiguration", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nativeSoftwareManagementServiceUpdateStartupConfigurationClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NativeSoftwareManagementService_UpdateStartupConfigurationClient interface {
+	Recv() (*ConfigResponse, error)
+	grpc.ClientStream
+}
+
+type nativeSoftwareManagementServiceUpdateStartupConfigurationClient struct {
+	grpc.ClientStream
+}
+
+func (x *nativeSoftwareManagementServiceUpdateStartupConfigurationClient) Recv() (*ConfigResponse, error) {
+	m := new(ConfigResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nativeSoftwareManagementServiceClient) GetStartupConfigurationInfo(ctx context.Context, in *StartupConfigInfoRequest, opts ...grpc.CallOption) (*StartupConfigInfoResponse, error) {
+	out := new(StartupConfigInfoResponse)
+	err := c.cc.Invoke(ctx, "/dmi.NativeSoftwareManagementService/GetStartupConfigurationInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NativeSoftwareManagementServiceServer is the server API for NativeSoftwareManagementService service.
 type NativeSoftwareManagementServiceServer interface {
 	// Get the software version information of the Active and Standby images
-	GetSoftwareVersion(context.Context, *HardwareID) (*SoftwareVersionInformation, error)
+	GetSoftwareVersion(context.Context, *HardwareID) (*GetSoftwareVersionInformationResponse, error)
 	// Downloads and installs the image in the standby partition, returns the status/progress of the Install
 	DownloadImage(*DownloadImageRequest, NativeSoftwareManagementService_DownloadImageServer) error
 	// Activates and runs the OLT with the image in the standby partition. If things are fine this image will
@@ -301,8 +767,35 @@ type NativeSoftwareManagementServiceServer interface {
 	// Any possibly required (sub-)steps like "commit" are left to the "Device Manager"
 	ActivateImage(*HardwareID, NativeSoftwareManagementService_ActivateImageServer) error
 	// Marks the image in the Standby as Active and reboots the device, so that it boots from that image which was in the standby.
-	// This API is to be used if operator wants to go back to the pervious software
+	// This API is to be used if operator wants to go back to the previous software
 	RevertToStandbyImage(*HardwareID, NativeSoftwareManagementService_RevertToStandbyImageServer) error
+	// This API can be used to let the devices pickup their properitary configuration which they need at startup.
+	UpdateStartupConfiguration(*ConfigRequest, NativeSoftwareManagementService_UpdateStartupConfigurationServer) error
+	// This API can be used to retrieve information about the current startup configuration that a device is using
+	GetStartupConfigurationInfo(context.Context, *StartupConfigInfoRequest) (*StartupConfigInfoResponse, error)
+}
+
+// UnimplementedNativeSoftwareManagementServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedNativeSoftwareManagementServiceServer struct {
+}
+
+func (*UnimplementedNativeSoftwareManagementServiceServer) GetSoftwareVersion(ctx context.Context, req *HardwareID) (*GetSoftwareVersionInformationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSoftwareVersion not implemented")
+}
+func (*UnimplementedNativeSoftwareManagementServiceServer) DownloadImage(req *DownloadImageRequest, srv NativeSoftwareManagementService_DownloadImageServer) error {
+	return status.Errorf(codes.Unimplemented, "method DownloadImage not implemented")
+}
+func (*UnimplementedNativeSoftwareManagementServiceServer) ActivateImage(req *HardwareID, srv NativeSoftwareManagementService_ActivateImageServer) error {
+	return status.Errorf(codes.Unimplemented, "method ActivateImage not implemented")
+}
+func (*UnimplementedNativeSoftwareManagementServiceServer) RevertToStandbyImage(req *HardwareID, srv NativeSoftwareManagementService_RevertToStandbyImageServer) error {
+	return status.Errorf(codes.Unimplemented, "method RevertToStandbyImage not implemented")
+}
+func (*UnimplementedNativeSoftwareManagementServiceServer) UpdateStartupConfiguration(req *ConfigRequest, srv NativeSoftwareManagementService_UpdateStartupConfigurationServer) error {
+	return status.Errorf(codes.Unimplemented, "method UpdateStartupConfiguration not implemented")
+}
+func (*UnimplementedNativeSoftwareManagementServiceServer) GetStartupConfigurationInfo(ctx context.Context, req *StartupConfigInfoRequest) (*StartupConfigInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStartupConfigurationInfo not implemented")
 }
 
 func RegisterNativeSoftwareManagementServiceServer(s *grpc.Server, srv NativeSoftwareManagementServiceServer) {
@@ -390,6 +883,45 @@ func (x *nativeSoftwareManagementServiceRevertToStandbyImageServer) Send(m *Imag
 	return x.ServerStream.SendMsg(m)
 }
 
+func _NativeSoftwareManagementService_UpdateStartupConfiguration_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ConfigRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NativeSoftwareManagementServiceServer).UpdateStartupConfiguration(m, &nativeSoftwareManagementServiceUpdateStartupConfigurationServer{stream})
+}
+
+type NativeSoftwareManagementService_UpdateStartupConfigurationServer interface {
+	Send(*ConfigResponse) error
+	grpc.ServerStream
+}
+
+type nativeSoftwareManagementServiceUpdateStartupConfigurationServer struct {
+	grpc.ServerStream
+}
+
+func (x *nativeSoftwareManagementServiceUpdateStartupConfigurationServer) Send(m *ConfigResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NativeSoftwareManagementService_GetStartupConfigurationInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartupConfigInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NativeSoftwareManagementServiceServer).GetStartupConfigurationInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dmi.NativeSoftwareManagementService/GetStartupConfigurationInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NativeSoftwareManagementServiceServer).GetStartupConfigurationInfo(ctx, req.(*StartupConfigInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _NativeSoftwareManagementService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "dmi.NativeSoftwareManagementService",
 	HandlerType: (*NativeSoftwareManagementServiceServer)(nil),
@@ -397,6 +929,10 @@ var _NativeSoftwareManagementService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSoftwareVersion",
 			Handler:    _NativeSoftwareManagementService_GetSoftwareVersion_Handler,
+		},
+		{
+			MethodName: "GetStartupConfigurationInfo",
+			Handler:    _NativeSoftwareManagementService_GetStartupConfigurationInfo_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
@@ -413,6 +949,11 @@ var _NativeSoftwareManagementService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "RevertToStandbyImage",
 			Handler:       _NativeSoftwareManagementService_RevertToStandbyImage_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "UpdateStartupConfiguration",
+			Handler:       _NativeSoftwareManagementService_UpdateStartupConfiguration_Handler,
 			ServerStreams: true,
 		},
 	},
