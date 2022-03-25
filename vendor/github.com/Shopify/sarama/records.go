@@ -8,7 +8,6 @@ const (
 	defaultRecords
 
 	magicOffset = 16
-	magicLength = 1
 )
 
 // Records implements a union type containing either a RecordBatch or a legacy MessageSet.
@@ -182,6 +181,21 @@ func (r *Records) isOverflow() (bool, error) {
 		return false, nil
 	}
 	return false, fmt.Errorf("unknown records type: %v", r.recordsType)
+}
+
+func (r *Records) recordsOffset() (*int64, error) {
+	switch r.recordsType {
+	case unknownRecords:
+		return nil, nil
+	case legacyRecords:
+		return nil, nil
+	case defaultRecords:
+		if r.RecordBatch == nil {
+			return nil, nil
+		}
+		return &r.RecordBatch.FirstOffset, nil
+	}
+	return nil, fmt.Errorf("unknown records type: %v", r.recordsType)
 }
 
 func magicValue(pd packetDecoder) (int8, error) {
