@@ -19,6 +19,8 @@ type BrokerInfo struct {
 	Name        string   `yaml: name`
 	Host        string   `yaml: host`
 	Description string   `yaml: description`
+	Partitions  int      `yaml: partitions`
+	Replicas    int      `yaml: replicas`
 	Topics      []string `yaml: topics`
 }
 
@@ -35,7 +37,7 @@ type TargetInfo struct {
 }
 
 type ConvInfo struct {
-	Onusnhex  bool `yaml: onusnhex`
+	Onusnhex bool `yaml: onusnhex`
 }
 
 type Config struct {
