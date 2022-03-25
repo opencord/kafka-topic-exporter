@@ -3,6 +3,8 @@ broker:
   name: broker-name
   host: cord-kafka.default.svc.cluster.local:9092
   description: The kafka broker
+  partitions: 1
+  replicas: 2
   topics:
     - importer
     - onos.kpis
