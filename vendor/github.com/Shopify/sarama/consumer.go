@@ -35,6 +35,10 @@ func (ce ConsumerError) Error() string {
 	return fmt.Sprintf("kafka: error while consuming %s/%d: %s", ce.Topic, ce.Partition, ce.Err)
 }
 
+func (ce ConsumerError) Unwrap() error {
+	return ce.Err
+}
+
 // ConsumerErrors is a type that wraps a batch of errors and implements the Error interface.
 // It can be returned from the PartitionConsumer's Close methods to avoid the need to manually drain errors
 // when stopping.
@@ -70,6 +74,26 @@ type Consumer interface {
 	// Close shuts down the consumer. It must be called after all child
 	// PartitionConsumers have already been closed.
 	Close() error
+
+	// Pause suspends fetching from the requested partitions. Future calls to the broker will not return any
+	// records from these partitions until they have been resumed using Resume()/ResumeAll().
+	// Note that this method does not affect partition subscription.
+	// In particular, it does not cause a group rebalance when automatic assignment is used.
+	Pause(topicPartitions map[string][]int32)
+
+	// Resume resumes specified partitions which have been paused with Pause()/PauseAll().
+	// New calls to the broker will return records from these partitions if there are any to be fetched.
+	Resume(topicPartitions map[string][]int32)
+
+	// Pause suspends fetching from all partitions. Future calls to the broker will not return any
+	// records from these partitions until they have been resumed using Resume()/ResumeAll().
+	// Note that this method does not affect partition subscription.
+	// In particular, it does not cause a group rebalance when automatic assignment is used.
+	PauseAll()
+
+	// Resume resumes all partitions which have been paused with Pause()/PauseAll().
+	// New calls to the broker will return records from these partitions if there are any to be fetched.
+	ResumeAll()
 }
 
 type consumer struct {
@@ -128,16 +152,17 @@ func (c *consumer) Partitions(topic string) ([]int32, error) {
 
 func (c *consumer) ConsumePartition(topic string, partition int32, offset int64) (PartitionConsumer, error) {
 	child := &partitionConsumer{
-		consumer:  c,
-		conf:      c.conf,
-		topic:     topic,
-		partition: partition,
-		messages:  make(chan *ConsumerMessage, c.conf.ChannelBufferSize),
-		errors:    make(chan *ConsumerError, c.conf.ChannelBufferSize),
-		feeder:    make(chan *FetchResponse, 1),
-		trigger:   make(chan none, 1),
-		dying:     make(chan none),
-		fetchSize: c.conf.Consumer.Fetch.Default,
+		consumer:             c,
+		conf:                 c.conf,
+		topic:                topic,
+		partition:            partition,
+		messages:             make(chan *ConsumerMessage, c.conf.ChannelBufferSize),
+		errors:               make(chan *ConsumerError, c.conf.ChannelBufferSize),
+		feeder:               make(chan *FetchResponse, 1),
+		preferredReadReplica: invalidPreferredReplicaID,
+		trigger:              make(chan none, 1),
+		dying:                make(chan none),
+		fetchSize:            c.conf.Consumer.Fetch.Default,
 	}
 
 	if err := child.chooseStartingOffset(offset); err != nil {
@@ -240,6 +265,62 @@ func (c *consumer) abandonBrokerConsumer(brokerWorker *brokerConsumer) {
 	delete(c.brokerConsumers, brokerWorker.broker)
 }
 
+// Pause implements Consumer.
+func (c *consumer) Pause(topicPartitions map[string][]int32) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	for topic, partitions := range topicPartitions {
+		for _, partition := range partitions {
+			if topicConsumers, ok := c.children[topic]; ok {
+				if partitionConsumer, ok := topicConsumers[partition]; ok {
+					partitionConsumer.Pause()
+				}
+			}
+		}
+	}
+}
+
+// Resume implements Consumer.
+func (c *consumer) Resume(topicPartitions map[string][]int32) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	for topic, partitions := range topicPartitions {
+		for _, partition := range partitions {
+			if topicConsumers, ok := c.children[topic]; ok {
+				if partitionConsumer, ok := topicConsumers[partition]; ok {
+					partitionConsumer.Resume()
+				}
+			}
+		}
+	}
+}
+
+// PauseAll implements Consumer.
+func (c *consumer) PauseAll() {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	for _, partitions := range c.children {
+		for _, partitionConsumer := range partitions {
+			partitionConsumer.Pause()
+		}
+	}
+}
+
+// ResumeAll implements Consumer.
+func (c *consumer) ResumeAll() {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	for _, partitions := range c.children {
+		for _, partitionConsumer := range partitions {
+			partitionConsumer.Resume()
+		}
+	}
+}
+
 // PartitionConsumer
 
 // PartitionConsumer processes Kafka messages from a given topic and partition. You MUST call one of Close() or
@@ -287,6 +368,20 @@ type PartitionConsumer interface {
 	// i.e. the offset that will be used for the next message that will be produced.
 	// You can use this to determine how far behind the processing is.
 	HighWaterMarkOffset() int64
+
+	// Pause suspends fetching from this partition. Future calls to the broker will not return
+	// any records from these partition until it have been resumed using Resume().
+	// Note that this method does not affect partition subscription.
+	// In particular, it does not cause a group rebalance when automatic assignment is used.
+	Pause()
+
+	// Resume resumes this partition which have been paused with Pause().
+	// New calls to the broker will return records from these partitions if there are any to be fetched.
+	// If the partition was not previously paused, this method is a no-op.
+	Resume()
+
+	// IsPaused indicates if this partition consumer is paused or not
+	IsPaused() bool
 }
 
 type partitionConsumer struct {
@@ -299,6 +394,8 @@ type partitionConsumer struct {
 	errors   chan *ConsumerError
 	feeder   chan *FetchResponse
 
+	preferredReadReplica int32
+
 	trigger, dying chan none
 	closeOnce      sync.Once
 	topic          string
@@ -307,6 +404,8 @@ type partitionConsumer struct {
 	fetchSize      int32
 	offset         int64
 	retries        int32
+
+	paused int32
 }
 
 var errTimedOut = errors.New("timed out feeding messages to the user") // not user-facing
@@ -344,7 +443,6 @@ func (child *partitionConsumer) dispatcher() {
 				child.broker = nil
 			}
 
-			Logger.Printf("consumer/%s/%d finding new broker\n", child.topic, child.partition)
 			if err := child.dispatch(); err != nil {
 				child.sendError(err)
 				child.trigger <- none{}
@@ -359,18 +457,37 @@ func (child *partitionConsumer) dispatcher() {
 	close(child.feeder)
 }
 
+func (child *partitionConsumer) preferredBroker() (*Broker, error) {
+	if child.preferredReadReplica >= 0 {
+		broker, err := child.consumer.client.Broker(child.preferredReadReplica)
+		if err == nil {
+			return broker, nil
+		}
+		Logger.Printf(
+			"consumer/%s/%d failed to find active broker for preferred read replica %d - will fallback to leader",
+			child.topic, child.partition, child.preferredReadReplica)
+
+		// if we couldn't find it, discard the replica preference and trigger a
+		// metadata refresh whilst falling back to consuming from the leader again
+		child.preferredReadReplica = invalidPreferredReplicaID
+		_ = child.consumer.client.RefreshMetadata(child.topic)
+	}
+
+	// if preferred replica cannot be found fallback to leader
+	return child.consumer.client.Leader(child.topic, child.partition)
+}
+
 func (child *partitionConsumer) dispatch() error {
 	if err := child.consumer.client.RefreshMetadata(child.topic); err != nil {
 		return err
 	}
 
-	var leader *Broker
-	var err error
-	if leader, err = child.consumer.client.Leader(child.topic, child.partition); err != nil {
+	broker, err := child.preferredBroker()
+	if err != nil {
 		return err
 	}
 
-	child.broker = child.consumer.refBrokerConsumer(leader)
+	child.broker = child.consumer.refBrokerConsumer(broker)
 
 	child.broker.input <- child
 
@@ -382,6 +499,9 @@ func (child *partitionConsumer) chooseStartingOffset(offset int64) error {
 	if err != nil {
 		return err
 	}
+
+	child.highWaterMarkOffset = newestOffset
+
 	oldestOffset, err := child.consumer.client.GetOffset(child.topic, child.partition, OffsetOldest)
 	if err != nil {
 		return err
@@ -422,13 +542,13 @@ func (child *partitionConsumer) AsyncClose() {
 func (child *partitionConsumer) Close() error {
 	child.AsyncClose()
 
-	var errors ConsumerErrors
+	var consumerErrors ConsumerErrors
 	for err := range child.errors {
-		errors = append(errors, err)
+		consumerErrors = append(consumerErrors, err)
 	}
 
-	if len(errors) > 0 {
-		return errors
+	if len(consumerErrors) > 0 {
+		return consumerErrors
 	}
 	return nil
 }
@@ -451,6 +571,7 @@ feederLoop:
 		}
 
 		for i, msg := range msgs {
+			child.interceptors(msg)
 		messageSelect:
 			select {
 			case <-child.dying:
@@ -464,6 +585,7 @@ feederLoop:
 					child.broker.acks.Done()
 				remainingLoop:
 					for _, msg = range msgs[i:] {
+						child.interceptors(msg)
 						select {
 						case child.messages <- msg:
 						case <-child.dying:
@@ -586,6 +708,10 @@ func (child *partitionConsumer) parseResponse(response *FetchResponse) ([]*Consu
 
 	consumerBatchSizeMetric.Update(int64(nRecs))
 
+	if block.PreferredReadReplica != invalidPreferredReplicaID {
+		child.preferredReadReplica = block.PreferredReadReplica
+	}
+
 	if nRecs == 0 {
 		partialTrailingMessage, err := block.isPartial()
 		if err != nil {
@@ -608,6 +734,10 @@ func (child *partitionConsumer) parseResponse(response *FetchResponse) ([]*Consu
 					child.fetchSize = child.conf.Consumer.Fetch.Max
 				}
 			}
+		} else if block.LastRecordsBatchOffset != nil && *block.LastRecordsBatchOffset < block.HighWaterMarkOffset {
+			// check last record offset to avoid stuck if high watermark was not reached
+			Logger.Printf("consumer/broker/%d received batch with zero records but high watermark was not reached, topic %s, partition %d, offset %d\n", child.broker.broker.ID(), child.topic, child.partition, *block.LastRecordsBatchOffset)
+			child.offset = *block.LastRecordsBatchOffset + 1
 		}
 
 		return nil, nil
@@ -623,7 +753,7 @@ func (child *partitionConsumer) parseResponse(response *FetchResponse) ([]*Consu
 	abortedProducerIDs := make(map[int64]struct{}, len(block.AbortedTransactions))
 	abortedTransactions := block.getAbortedTransactions()
 
-	messages := []*ConsumerMessage{}
+	var messages []*ConsumerMessage
 	for _, records := range block.RecordsSet {
 		switch records.recordsType {
 		case legacyRecords:
@@ -691,6 +821,27 @@ func (child *partitionConsumer) parseResponse(response *FetchResponse) ([]*Consu
 	}
 
 	return messages, nil
+}
+
+func (child *partitionConsumer) interceptors(msg *ConsumerMessage) {
+	for _, interceptor := range child.conf.Consumer.Interceptors {
+		msg.safelyApplyInterceptor(interceptor)
+	}
+}
+
+// Pause implements PartitionConsumer.
+func (child *partitionConsumer) Pause() {
+	atomic.StoreInt32(&child.paused, 1)
+}
+
+// Resume implements PartitionConsumer.
+func (child *partitionConsumer) Resume() {
+	atomic.StoreInt32(&child.paused, 0)
+}
+
+// IsPaused implements PartitionConsumer.
+func (child *partitionConsumer) IsPaused() bool {
+	return atomic.LoadInt32(&child.paused) == 1
 }
 
 type brokerConsumer struct {
@@ -761,7 +912,7 @@ done:
 	close(bc.newSubscriptions)
 }
 
-//subscriptionConsumer ensures we will get nil right away if no new subscriptions is available
+// subscriptionConsumer ensures we will get nil right away if no new subscriptions is available
 func (bc *brokerConsumer) subscriptionConsumer() {
 	<-bc.wait // wait for our first piece of work
 
@@ -776,7 +927,6 @@ func (bc *brokerConsumer) subscriptionConsumer() {
 		}
 
 		response, err := bc.fetchNewMessages()
-
 		if err != nil {
 			Logger.Printf("consumer/broker/%d disconnecting due to error processing FetchRequest: %s\n", bc.broker.ID(), err)
 			bc.abort(err)
@@ -810,15 +960,30 @@ func (bc *brokerConsumer) updateSubscriptions(newSubscriptions []*partitionConsu
 	}
 }
 
-//handleResponses handles the response codes left for us by our subscriptions, and abandons ones that have been closed
+// handleResponses handles the response codes left for us by our subscriptions, and abandons ones that have been closed
 func (bc *brokerConsumer) handleResponses() {
 	for child := range bc.subscriptions {
 		result := child.responseResult
 		child.responseResult = nil
 
+		if result == nil {
+			if preferredBroker, err := child.preferredBroker(); err == nil {
+				if bc.broker.ID() != preferredBroker.ID() {
+					// not an error but needs redispatching to consume from preferred replica
+					Logger.Printf(
+						"consumer/broker/%d abandoned in favor of preferred replica broker/%d\n",
+						bc.broker.ID(), preferredBroker.ID())
+					child.trigger <- none{}
+					delete(bc.subscriptions, child)
+				}
+			}
+			continue
+		}
+
+		// Discard any replica preference.
+		child.preferredReadReplica = invalidPreferredReplicaID
+
 		switch result {
-		case nil:
-			// no-op
 		case errTimedOut:
 			Logger.Printf("consumer/broker/%d abandoned subscription to %s/%d because consuming was taking too long\n",
 				bc.broker.ID(), child.topic, child.partition)
@@ -887,9 +1052,26 @@ func (bc *brokerConsumer) fetchNewMessages() (*FetchResponse, error) {
 		request.Version = 4
 		request.Isolation = bc.consumer.conf.Consumer.IsolationLevel
 	}
+	if bc.consumer.conf.Version.IsAtLeast(V1_1_0_0) {
+		request.Version = 7
+		// We do not currently implement KIP-227 FetchSessions. Setting the id to 0
+		// and the epoch to -1 tells the broker not to generate as session ID we're going
+		// to just ignore anyway.
+		request.SessionID = 0
+		request.SessionEpoch = -1
+	}
+	if bc.consumer.conf.Version.IsAtLeast(V2_1_0_0) {
+		request.Version = 10
+	}
+	if bc.consumer.conf.Version.IsAtLeast(V2_3_0_0) {
+		request.Version = 11
+		request.RackID = bc.consumer.conf.RackID
+	}
 
 	for child := range bc.subscriptions {
-		request.AddBlock(child.topic, child.partition, child.offset, child.fetchSize)
+		if !child.IsPaused() {
+			request.AddBlock(child.topic, child.partition, child.offset, child.fetchSize)
+		}
 	}
 
 	return bc.broker.Fetch(request)

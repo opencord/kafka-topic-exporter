@@ -18,7 +18,7 @@ SHELL = bash -eu -o pipefail
 # Variables
 VERSION                  ?= $(shell cat ./VERSION)
 CONTAINER_NAME           ?= $(notdir $(abspath .))
-VOLTHA_TOOLS_VERSION ?= 2.0.0
+VOLTHA_TOOLS_VERSION ?= 2.5.3
 
 ## Docker related
 DOCKER_REGISTRY          ?=
