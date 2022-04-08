@@ -18,6 +18,23 @@
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "25f8bb0b_e4790bd7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2022-04-08T13:16:26Z",
+      "side": 1,
+      "message": "From reading the code, it seems that this repo does more that just exporting a kafka topic (as per its name).  It creates topics, it has a http server (/metrics) and it also consumes from the topics (not much code there for now).   \n\nGiven the above (if i interpreted things correctly), should the project be structured as a proper go project (i.e. main under \"cmd\" and anything private under \"internal\", etc ... similar to the openolt adapter code layout)?  \n\nHaving a READme.md in this repo will be helpful as well.",
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "73f33bfd_f4f36c5b",
