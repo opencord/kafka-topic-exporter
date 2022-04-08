@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16e077b8_ef62f0e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000404
+      },
+      "writtenOn": "2022-04-08T12:41:14Z",
+      "side": 1,
+      "message": "Some minor comments:",
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73f33bfd_f4f36c5b",
+        "filename": "main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000404
+      },
+      "writtenOn": "2022-04-08T12:41:14Z",
+      "side": 1,
+      "message": "if it\u0027s desired to use a consumer group, then the number of partions should be set accordingly.",
+      "range": {
+        "startLine": 47,
+        "startChar": 25,
+        "endLine": 47,
+        "endChar": 41
+      },
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4fd3b3a_956bfa7b",
+        "filename": "main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1000404
+      },
+      "writtenOn": "2022-04-08T12:41:14Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 69,
+        "startChar": 14,
+        "endLine": 69,
+        "endChar": 23
+      },
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68ec0dff_01c7270a",
+        "filename": "main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1000404
+      },
+      "writtenOn": "2022-04-08T12:41:14Z",
+      "side": 1,
+      "message": "According to the patch\u0027s description, I suppose the values should be configurable, not hard coded.",
+      "range": {
+        "startLine": 76,
+        "startChar": 42,
+        "endLine": 76,
+        "endChar": 49
+      },
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    }
+  ]
+}
