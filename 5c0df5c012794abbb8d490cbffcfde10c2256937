@@ -16,6 +16,46 @@
       "message": "Hi Kesevan, thanks. Regarding Khen\u0027s comment, I agree with him. Maybe can be done in a separate patch.",
       "revId": "5c0df5c012794abbb8d490cbffcfde10c2256937",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcefd75c_18ea6414",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2022-04-14T23:04:34Z",
+      "side": 1,
+      "message": "Looks good to me, but just curious, why this tool is now creating the topics?\n\n@Khen, I believe this can be restructured using https://github.com/golang-standards/project-layout but it\u0027s probably better to do that in a separate patch.",
+      "revId": "5c0df5c012794abbb8d490cbffcfde10c2256937",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2799883_412c3baa",
+        "filename": "main.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2022-04-14T23:04:34Z",
+      "side": 1,
+      "message": "there is no need to call \"panic\" here as that\u0027s already called within the logger",
+      "range": {
+        "startLine": 89,
+        "startChar": 3,
+        "endLine": 89,
+        "endChar": 13
+      },
+      "revId": "5c0df5c012794abbb8d490cbffcfde10c2256937",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
     }
   ]
 }
