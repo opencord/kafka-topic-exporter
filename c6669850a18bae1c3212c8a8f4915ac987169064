@@ -60,6 +60,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "714c8ce1_915c09f9",
+        "filename": "main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2022-04-14T05:20:35Z",
+      "side": 1,
+      "message": "The no of partitions is made configurable",
+      "parentUuid": "73f33bfd_f4f36c5b",
+      "range": {
+        "startLine": 47,
+        "startChar": 25,
+        "endLine": 47,
+        "endChar": 41
+      },
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d4fd3b3a_956bfa7b",
         "filename": "main.go",
         "patchSetId": 3
@@ -83,6 +107,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0dfee682_9e26af69",
+        "filename": "main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2022-04-14T05:20:35Z",
+      "side": 1,
+      "message": "fixed",
+      "parentUuid": "d4fd3b3a_956bfa7b",
+      "range": {
+        "startLine": 69,
+        "startChar": 14,
+        "endLine": 69,
+        "endChar": 23
+      },
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68ec0dff_01c7270a",
         "filename": "main.go",
         "patchSetId": 3
@@ -94,6 +142,30 @@
       "writtenOn": "2022-04-08T12:41:14Z",
       "side": 1,
       "message": "According to the patch\u0027s description, I suppose the values should be configurable, not hard coded.",
+      "range": {
+        "startLine": 76,
+        "startChar": 42,
+        "endLine": 76,
+        "endChar": 49
+      },
+      "revId": "c6669850a18bae1c3212c8a8f4915ac987169064",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b0e1086_a09afe04",
+        "filename": "main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2022-04-14T05:20:35Z",
+      "side": 1,
+      "message": "made the partitions and replicas as configurable with default values",
+      "parentUuid": "68ec0dff_01c7270a",
       "range": {
         "startLine": 76,
         "startChar": 42,
