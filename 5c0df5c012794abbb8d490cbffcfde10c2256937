@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "219017e3_695fb71b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000404
+      },
+      "writtenOn": "2022-04-14T14:53:10Z",
+      "side": 1,
+      "message": "Hi Kesevan, thanks. Regarding Khen\u0027s comment, I agree with him. Maybe can be done in a separate patch.",
+      "revId": "5c0df5c012794abbb8d490cbffcfde10c2256937",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388"
+    }
+  ]
+}
